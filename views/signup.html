@@ -96,16 +96,16 @@
     </div>
   </div>
   
-  <form>
+  <form action="/signup" method="post">
     <!-- input(type='hidden' name='_csrf' value=csrfToken) -->
     csrfToken: <%= csrfToken %>
     <input type="hidden" name="_csrf" value=<%= csrfToken %>>
     <label>Username:</label>
-    <input required type="text">
+    <input required type="text" name="username">
     <label>Password:</label>
-    <input required type="password">
+    <input required type="password" name="password">
     <label>Repeat Password:</label>
-    <input required type="password">
+    <input required type="password" name="password-repeat">
     <input class="submit" type="submit" value="sign up!">
   </form>
 </body>
