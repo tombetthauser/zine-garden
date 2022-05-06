@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  h1 {
+    font-weight: 100;
+    margin-bottom: 0;
+  }
+
+  html {
+    background-color: lightgrey;
+    padding: 0 0 0 0;
+    /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
+    /* background-position: center; */
+  }
+
+  body {
+    background-size: contain;
+    width: 100%;
+    padding-top: 5px;
+    margin: 0 0 0 0;
+    /* color: yellow; */
+  }
+
+  .navbar {
+    width: 100%;
+    padding-left: 40px;
+    border-bottom: .5px solid black;
+    margin-bottom: 20px;
+  }
+
+  .buttons {
+    margin-left: 25px;
+  }
+
+  .buttons button {
+    margin-left: 10px;
+  }
+
+  p {
+    margin-top: 5px;
+  }
+
+  .info-span {
+    font-size: 13px;
+  }
+
+  ul.zine-links {
+    margin-left: 20px;
+  }
+
+  div.login-div {
+    font-size: 12px;
+    padding-top: 7.5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-top: 0.5px solid #000;
+    width: 300px;
+  }
+
+  div.login-div a {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+
+  p.welcome-message {
+    font-size: 13px;
+    width: 400px;
+    margin-left: 35px;
+    margin-top: 20px;
+    line-height: 16px;
+  }
+
+  label,
+  input.submit {
+    display: block;
+    margin-top: 15px;
+  }
+
+  form {
+    margin-top: 30px;
+    margin-left: 40px;
+    border: 0.5px solid #000;
+    width: 200px;
+    padding: 20px 45px 50px 45px;
+    border-radius: 5px;
+    background-color: rgb(225, 225, 225);
+  }
+</style>
+
+<body>
+  <div class="navbar">
+    <h1>Log In 🌷</h1>
+    <p>Welcome back to Zine Garden!</p>
+    <div class="login-div">
+      don't have an account? -->
+      <a href="/signup">sign up</a> //
+      <a href="/">back to zines</a>
+    </div>
+  </div>
+
+  <form>
+    <label>Username:</label>
+    <input required type="text">
+    <label>Password:</label>
+    <input required type="password">
+    <input class="submit" type="submit" value="log in!">
+  </form>
+</body>
+
+</html>

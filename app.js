@@ -2,8 +2,6 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
-// var express = require('express');
-// var app = express();
 
 const app = express();
 
@@ -13,7 +11,7 @@ app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
 app.set('views', __dirname);
 
-// const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 testZines = [
   { name: "the cats of star trek", url: "http://www.google.com", author: "elliot s", city: "San Francisco, CA", date: new Date().getFullYear()},
@@ -21,24 +19,33 @@ testZines = [
   { name: "a art bums guide to chicago", url: "http://www.google.com", author: "brady", city: "Santa Fe, NM", date: new Date().getFullYear()},
 ]
 
-// sendFile will go here
 app.get('/', function (req, res) {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
-  // res.render(__dirname + '/views/test.html', {"test":"TEST??"});
-  res.render(__dirname + '/views/splash.html', {test: testZines});
+  res.render(__dirname + '/views/index.html', {test: testZines});
 });
 
-app.get('/zines/make', function (req, res) {
-  // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
-  // res.render(__dirname + '/views/test.html', {"test":"TEST??"});
-  res.render(__dirname + '/views/make-zine.html', {test: testZines});
+app.get('/make', function (req, res) {
+  res.render(__dirname + '/views/make.html', {test: testZines});
 });
 
-app.get('/zines/upload', function (req, res) {
-  // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
-  // res.render(__dirname + '/views/test.html', {"test":"TEST??"});
-  res.render(__dirname + '/views/upload-zine.html', {test: testZines});
+app.get('/upload', function (req, res) {
+  res.render(__dirname + '/views/upload.html', {test: testZines});
 });
+
+app.get('/login', function (req, res) {
+  res.render(__dirname + '/views/login.html', {test: testZines});
+});
+
+app.get('/signup', function (req, res) {
+  res.render(__dirname + '/views/signup.html', {test: testZines});
+});
+
+
+
+
+
+
+
 
 // app.listen(port);
 // console.log('Server started at http://localhost:' + port);

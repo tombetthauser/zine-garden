@@ -52,27 +52,58 @@
   ul.zine-links {
     margin-left: 20px;
   }
+  div.login-div {
+    font-size: 12px;
+    padding-top: 7.5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-top: 0.5px solid #000;
+    width: 300px;
+  }
+  div.login-div a {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+  p.welcome-message {
+    font-size: 13px;
+    width: 400px;
+    margin-left: 35px;
+    margin-top: 20px;
+    line-height: 16px;
+  }
+  label, input.submit {
+    display: block;
+    margin-top: 15px;
+  }
+  form {
+    margin-top: 30px;
+    margin-left: 40px;
+    border: 0.5px solid #000;
+    width: 200px;
+    padding: 20px 45px 50px 45px;
+    border-radius: 5px;
+    background-color: rgb(225, 225, 225);
+  }
 </style>
 <body>
   <div class="navbar">
-    <h1>Zine Garden 🌷</h1>
-    <p>Welcome to the party!</p>
+    <h1>Sign Up 🌷</h1>
+    <p>Welcome to Zine Garden!</p>
+    <div class="login-div">
+      have an account already? --> 
+      <a href="/login">log in</a> // 
+      <a href="/">back to zines</a>
+    </div>
   </div>
   
-  <div class="buttons">
-    <a href="/zines/upload"><button>upload a zine pdf!</button></a>
-    <a href="/zines/make"><button>make a zine pdf!</button></a>
-  </div>
-
-  <ul class="zine-links">
-    <% for (let i = 0; i < test.length; i++) { %>
-      <li>
-        <a target="new" href=<%= test[i].url %>><%= test[i].name %></a>
-          <span class="info-span">
-            <%= ` --> ` + test[i].city + " (" + test[i].date + `)`%>
-          </span>
-      </li>
-    <% } %>
-  </ul>
+  <form>
+    <label>Username:</label>
+    <input required type="text">
+    <label>Password:</label>
+    <input required type="password">
+    <label>Repeat Password:</label>
+    <input required type="password">
+    <input class="submit" type="submit" value="sign up!">
+  </form>
 </body>
 </html>

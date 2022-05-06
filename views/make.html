@@ -21,7 +21,7 @@
   h1 {
     font-weight: 100;
     margin-bottom: 0;
-    margin-top: 0;
+    /* margin-top: 0; */
   }
   form {
     margin-left: 40px;
@@ -29,7 +29,7 @@
     width: 400px;
   }
   div.spacer {
-    margin-top: 12.5px;
+    margin-top: 15px;
     margin-bottom: 15px;
     width: 200px;
     border-bottom: 0.5px solid #000;
@@ -37,7 +37,7 @@
   p.note {
     font-size: 12px;
     margin-left: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 5px;
   }
   ul.note-ul {
@@ -51,12 +51,110 @@
     font-size: 14px;
     margin-top: 0;
   }
+
+  h1 {
+    font-weight: 100;
+    margin-bottom: 0;
+  }
+
+  html {
+    background-color: lightgrey;
+    padding: 0 0 0 0;
+    /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
+    /* background-position: center; */
+  }
+
+  body {
+    background-size: contain;
+    width: 100%;
+    padding-top: 5px;
+    margin: 0 0 0 0;
+    /* color: yellow; */
+  }
+
+  .navbar {
+    width: 100%;
+    padding-left: 40px;
+    border-bottom: .5px solid black;
+    margin-bottom: 20px;
+  }
+
+  .buttons {
+    margin-left: 25px;
+  }
+
+  .buttons button {
+    margin-left: 10px;
+  }
+
+  p {
+    margin-top: 5px;
+  }
+
+  .info-span {
+    font-size: 13px;
+  }
+
+  ul.zine-links {
+    margin-left: 20px;
+  }
+
+  div.login-div {
+    font-size: 12px;
+    padding-top: 7.5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-top: 0.5px solid #000;
+    width: 300px;
+  }
+
+  div.login-div a {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+
+  p.welcome-message {
+    font-size: 13px;
+    width: 400px;
+    margin-left: 35px;
+    margin-top: 20px;
+    line-height: 16px;
+  }
+
+  input.submit {
+    display: block;
+    margin-top: 30px;
+  }
+
+  /* label {
+    display: block;
+    margin-top: 15px;
+  } */
+
+  form {
+    margin-top: 30px;
+    margin-left: 40px;
+    border: 0.5px solid #000;
+    width: 400px;
+    padding: 35px 45px 50px 45px;
+    border-radius: 5px;
+    background-color: rgb(225, 225, 225);
+  }
+  summary {
+    font-size: 14px;
+  }
 </style>
 <body>
-  <div class="header">
-    <h1>Make a Zine PDF 🛠</h1>
-    <a href="/">back to zines page</a>
+  <div class="navbar">
+    <h1>Make a Zine 🌷</h1>
+    <p>Create a printable Zine PDF from images!</p>
+    <div class="login-div">
+      already have a zine pdf? -->
+      <a href="/upload">upload zine</a> //
+      <a href="/">back to zines</a>
+    </div>
   </div>
+
   <form action="">
     <label>Upload Images:</label>
     <input type="file" multiple/>

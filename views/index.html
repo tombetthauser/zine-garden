@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  h1 {
+      font-weight: 100;
+      margin-bottom: 0;
+  }
+
+  html {
+      background-color: lightgrey;
+      padding: 0 0 0 0;
+      /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
+      /* background-position: center; */
+    }
+    
+    body {
+      background-size: contain;
+      width: 100%;
+      padding-top: 5px;
+      margin: 0 0 0 0;
+      /* color: yellow; */
+  }
+
+  .navbar {
+      width: 100%;
+      padding-left: 40px;
+      border-bottom: .5px solid black;
+      margin-bottom: 20px;
+  }
+
+  .buttons {
+      margin-left: 25px;
+  }
+
+  .buttons button {
+      margin-left: 10px;
+  }
+
+  p {
+      margin-top: 5px;
+  }
+
+  .info-span {
+    font-size: 13px;
+  }
+  ul.zine-links {
+    margin-left: 20px;
+  }
+  div.login-div {
+    font-size: 12px;
+    padding-top: 7.5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-top: 0.5px solid #000;
+    width: 300px;
+  }
+  div.login-div a {
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+  p.welcome-message {
+    font-size: 13px;
+    width: 400px;
+    margin-left: 35px;
+    margin-top: 20px;
+    line-height: 16px;
+  }
+</style>
+<body>
+  <div class="navbar">
+    <h1>Zine Garden 🌷</h1>
+    <p>Welcome to the party!</p>
+    <div class="login-div">
+      you are currently not logged in --> 
+      <a href="/signup">sign up</a> // 
+      <a href="/login">log in</a>
+    </div>
+  </div>
+  
+  <div class="buttons">
+    <a href="/upload"><button>upload a zine pdf!</button></a>
+    <a href="/make"><button>make a zine pdf!</button></a>
+  </div>
+
+  <p class="welcome-message">
+    All zines free to download and print. No log in required. Print files are ready for standard home printers using 8.5 x 11 inch paper and include simple assembly / binding instructions.
+  </p>
+
+  <ul class="zine-links">
+    <% for (let i = 0; i < test.length; i++) { %>
+      <li>
+        <a target="new" href=<%= test[i].url %>><%= test[i].name %></a>
+          <span class="info-span">
+            <%= ` --> ` + test[i].city + " (" + test[i].date + `)`%>
+          </span>
+      </li>
+    <% } %>
+  </ul>
+</body>
+</html>
