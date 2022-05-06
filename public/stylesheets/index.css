@@ -1,3 +1,31 @@
 h1 {
-    color: #555555;
+    font-weight: 100;
+    margin-bottom: 0;
+}
+
+html {
+    background-color: lightgrey;
+}
+
+body {
+    padding-top: 5px;
+}
+
+.navbar {
+    width: 100%;
+    padding-left: 40px;
+    border-bottom: .5px solid black;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    margin-left: 25px;
+}
+
+.buttons button {
+    margin-left: 10px;
+}
+
+p {
+    margin-top: 5px;
 }
