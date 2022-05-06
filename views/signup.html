@@ -97,6 +97,9 @@
   </div>
   
   <form>
+    <!-- input(type='hidden' name='_csrf' value=csrfToken) -->
+    csrfToken: <%= csrfToken %>
+    <input type="hidden" name="_csrf" value=<%= csrfToken %>>
     <label>Username:</label>
     <input required type="text">
     <label>Password:</label>

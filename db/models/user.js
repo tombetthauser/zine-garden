@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     }
   }, {});
-  User.associate = function(models) {
-    User.hasMany(models.Post, {
-      as: 'zines',
-      foreignKey: 'userId',
-      onDelete: 'CASCADE'
-    });
-  };
+  // User.associate = function(models) {
+  //   User.hasMany(models.Post, {
+  //     as: 'zines',
+  //     foreignKey: 'userId',
+  //     onDelete: 'CASCADE'
+  //   });
+  // };
   return User;
 };
