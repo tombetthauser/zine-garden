@@ -20,6 +20,7 @@ const { loginUser, logoutUser } = require('./auth');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).catch(next);
+const { check, validationResult } = require('express-validator');
 
 
 
@@ -67,10 +68,10 @@ testZines = [
 
 // ~~~~~~~~~~ Validations ~~~~~~~~~~
 const signupValidations = [
-  // check('username')
+  check('username')
   //   .exists({ checkFalsy: true }).withMessage('please provide a username')
-  //   .isLength({ min: 3 }).withMessage('username must not be less than 3 characters long')
-  //   .isLength({ max: 50 }).withMessage('username must not be more than 50 characters long')
+    .isLength({ min: 3 }).withMessage('username must not be less than 3 characters long')
+    .isLength({ max: 50 }).withMessage('username must not be more than 50 characters long'),
   //   .custom(value => !/\s/.test(value))
   //   .withMessage('spaces are allowed in your username (what were you thinking?)')
   //   .custom((value) => {
@@ -81,10 +82,10 @@ const signupValidations = [
   //         }
   //       });
   //   }),
-  // check('password')
-  //   .exists({ checkFalsy: true }).withMessage('please provide a value for password')
-  //   .isLength({ min: 3 }).withMessage('password must not be less than 3 characters long')
-  //   .isLength({ max: 50 }).withMessage('password must not be more than 50 characters long')
+  check('password')
+    .exists({ checkFalsy: true }).withMessage('please provide a value for password')
+    .isLength({ min: 3 }).withMessage('password must not be less than 3 characters long')
+    .isLength({ max: 50 }).withMessage('password must not be more than 50 characters long')
   //   .custom(value => !/\s/.test(value))
   //   .withMessage('spaces are allowed in your password (you monster)'),
   // check('confirmPassword').custom((value, { req }) => {
@@ -121,30 +122,30 @@ app.get('/login', csrfProtection, function (req, res) {
 });
 
 app.get('/signup', csrfProtection, function (req, res) {
-  res.render(__dirname + '/views/signup.html', { csrfToken: req.csrfToken()});
+  res.render(__dirname + '/views/signup.html', { user: { username: "hype" }, errors: [], csrfToken: req.csrfToken()});
 });
 
-app.post('/signup', csrfProtection, signupValidations,
-  asyncHandler(async (req, res) => {
-    const { username, password } = req.body;
+app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, res) => {
+    const { username, password, confirmPassword } = req.body;
 
     console.log({username, password})
-    // const validatorErrors = validationResult(req);
+    const validatorErrors = validationResult(req);
     // const user = db.User.build({ username });
+    const user = { username, password, confirmPassword };
 
-    // if (validatorErrors.isEmpty()) {
+    if (validatorErrors.isEmpty()) {
     //   const hashedPassword = await bcrypt.hashSync(password);
     //   user.hashedPassword = hashedPassword;
     //   await user.save();
     //   loginUser(req, res, user);
     //   req.session.save(() => {
-    //     res.redirect('/');
+        res.redirect('/#success');
     //   })
-    // } else {
-    //   const errors = validatorErrors.array().map((error) => error.msg);
-    //   res.render('users-register', { user, errors, csrfToken: req.csrfToken() });
-    // }
-    res.redirect('/');
+    } else {
+      const errors = validatorErrors.array().map((error) => error.msg);
+      res.render(__dirname + '/views/signup.html', { user, errors, csrfToken: req.csrfToken() });
+      // res.redirect('/#failure');
+    }
   }));
 
 
@@ -163,7 +164,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('./views/error.pug');
 });
 
 

@@ -84,6 +84,17 @@
     border-radius: 5px;
     background-color: rgb(225, 225, 225);
   }
+  ul.errors {
+    color: #000;
+    margin-top: 15px;
+    padding-left: 12px;
+    font-size: 12px;
+    width: 160px;
+    font-weight: 800;
+  }
+  ul.errors li {
+    margin-bottom: 5px;
+  }
 </style>
 <body>
   <div class="navbar">
@@ -97,15 +108,18 @@
   </div>
   
   <form action="/signup" method="post">
-    <!-- input(type='hidden' name='_csrf' value=csrfToken) -->
-    csrfToken: <%= csrfToken %>
+    <% if (errors.length) { %><ul class="errors">
+        <% for (let i = 0; i < errors.length; i++) { %>
+          <li>Error: <%= errors[i] %></li>
+        <% } %>
+    </ul><% } %>
     <input type="hidden" name="_csrf" value=<%= csrfToken %>>
     <label>Username:</label>
-    <input required type="text" name="username">
+    <input required type="text" name="username" value=<%= user.username %>>
     <label>Password:</label>
     <input required type="password" name="password">
     <label>Repeat Password:</label>
-    <input required type="password" name="password-repeat">
+    <input required type="password" name="confirmPassword">
     <input class="submit" type="submit" value="sign up!">
   </form>
 </body>
