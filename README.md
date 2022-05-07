@@ -63,3 +63,16 @@ Use this project skeleton as a starting point for structuring your app. Things t
 
 * then create the Zines model
 * then clean that model up, add allownulls, stringlengths, relationships etc
+
+---
+
+* worked for a while getting ui and forms mocked up
+* figured out how to pass csf tokens and errors back and forth in the request and response objects
+* still reliant on a couple of libraries that might be unnecessary
+  * including express-validators
+
+* going back to database work to confirm and persist signup form
+* first need to migrate pending users migrations
+
+* double-checked that migration file was in line with desired model then tried
+  * npx dotenv sequelize-cli db:migrate

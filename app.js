@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const port = process.env.PORT || 8080;
+const db = require('./db/models');
 
 
 // ~~~~~~~~~~ Auth Related? ~~~~~~~~~~
@@ -21,7 +22,7 @@ const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).catch(next);
 const { check, validationResult } = require('express-validator');
-
+const bcrypt = require('bcryptjs');
 
 
 
@@ -75,15 +76,15 @@ const signupValidations = [
     .custom(value => !/\s/.test(value))
     .withMessage("spaces are not allowed in username")
     .matches(/^[A-Za-z0-9_-]+$/)
-    .withMessage("crazy characters are not allowed in username"),
-    // .custom((value) => {
-    //   return db.User.findOne({ where: { username: value } })
-    //     .then((user) => {
-    //       if (user) {
-    //         return Promise.reject('username is already in use');
-    //       }
-    //     });
-    // }),
+    .withMessage("crazy characters are not allowed in username")
+    .custom((value) => {
+      return db.User.findOne({ where: { username: value } })
+        .then((user) => {
+          if (user) {
+            return Promise.reject('username is already in use');
+          }
+        });
+    }),
   check('password')
     .exists({ checkFalsy: true }).withMessage('please provide a value for password')
     .isLength({ min: 3 }).withMessage('password must not be less than 3 characters long')
@@ -124,7 +125,7 @@ app.get('/login', csrfProtection, function (req, res) {
 });
 
 app.get('/signup', csrfProtection, function (req, res) {
-  res.render(__dirname + '/views/signup.html', { user: { username: "hype" }, errors: [], csrfToken: req.csrfToken()});
+  res.render(__dirname + '/views/signup.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken()});
 });
 
 app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, res) => {
@@ -132,17 +133,18 @@ app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, 
 
     console.log({username, password})
     const validatorErrors = validationResult(req);
-    // const user = db.User.build({ username });
-    const user = { username, password, confirmPassword };
+    const user = db.User.build({ username });
+    // const user = { username, password, confirmPassword };
 
     if (validatorErrors.isEmpty()) {
-    //   const hashedPassword = await bcrypt.hashSync(password);
-    //   user.hashedPassword = hashedPassword;
-    //   await user.save();
-    //   loginUser(req, res, user);
-    //   req.session.save(() => {
+      const passwordHash = await bcrypt.hashSync(password);
+      user.passwordHash = passwordHash;
+      user.userType = "normal";
+      await user.save();
+      loginUser(req, res, user);
+      req.session.save(() => {
         res.redirect('/#success');
-    //   })
+      })
     } else {
       const errors = validatorErrors.array().map((error) => error.msg);
       res.render(__dirname + '/views/signup.html', { user, errors, csrfToken: req.csrfToken() });
