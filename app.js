@@ -69,31 +69,33 @@ testZines = [
 // ~~~~~~~~~~ Validations ~~~~~~~~~~
 const signupValidations = [
   check('username')
-  //   .exists({ checkFalsy: true }).withMessage('please provide a username')
+    .exists({ checkFalsy: true }).withMessage('please provide a username')
     .isLength({ min: 3 }).withMessage('username must not be less than 3 characters long')
-    .isLength({ max: 50 }).withMessage('username must not be more than 50 characters long'),
-  //   .custom(value => !/\s/.test(value))
-  //   .withMessage('spaces are allowed in your username (what were you thinking?)')
-  //   .custom((value) => {
-  //     return db.User.findOne({ where: { username: value } })
-  //       .then((user) => {
-  //         if (user) {
-  //           return Promise.reject('username is already in use');
-  //         }
-  //       });
-  //   }),
+    .isLength({ max: 50 }).withMessage('username must not be more than 50 characters long')
+    .custom(value => !/\s/.test(value))
+    .withMessage("spaces are not allowed in username")
+    .matches(/^[A-Za-z0-9_-]+$/)
+    .withMessage("crazy characters are not allowed in username"),
+    // .custom((value) => {
+    //   return db.User.findOne({ where: { username: value } })
+    //     .then((user) => {
+    //       if (user) {
+    //         return Promise.reject('username is already in use');
+    //       }
+    //     });
+    // }),
   check('password')
     .exists({ checkFalsy: true }).withMessage('please provide a value for password')
     .isLength({ min: 3 }).withMessage('password must not be less than 3 characters long')
     .isLength({ max: 50 }).withMessage('password must not be more than 50 characters long')
-  //   .custom(value => !/\s/.test(value))
-  //   .withMessage('spaces are allowed in your password (you monster)'),
-  // check('confirmPassword').custom((value, { req }) => {
-  //   if (value !== req.body.password) {
-  //     throw new Error('confirm password must match password');
-  //   }
-  //   return true;
-  // }),
+    .custom(value => !/\s/.test(value))
+    .withMessage('spaces are not allowed in your password (you monster)'),
+  check('confirmPassword').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('confirm password must match password');
+    }
+    return true;
+  }),
 
   // optionally check password for special characters etc
   // check('password')

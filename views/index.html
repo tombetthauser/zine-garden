@@ -17,6 +17,7 @@
       padding: 0 0 0 0;
       /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
       /* background-position: center; */
+      min-height: 100vw;
     }
     
     body {
@@ -24,6 +25,7 @@
       width: 100%;
       padding-top: 5px;
       margin: 0 0 0 0;
+      min-height: 100vw;
       /* color: yellow; */
   }
 
@@ -76,6 +78,13 @@
     font-size: 11px;
     cursor: pointer;
   }
+  /* * {
+    text-shadow: 0px 0px 2px #000;
+    font-family: monospace;
+    font-weight: 500;
+    background-color: lightgray;
+    filter: saturate(0) contrast(20) invert(1);
+  } */
 </style>
 <body>
   <div class="navbar">
@@ -83,7 +92,7 @@
     <p>Welcome to the party!</p>
     <div class="login-div">
       you are currently not logged in --> 
-      <a href="/signup">sign up</a> // 
+      <a href="/signup">sign up</a> > 
       <a href="/login">log in</a>
     </div>
   </div>
@@ -106,8 +115,9 @@
           </span>
       </li>
     <% } %>
+    <li>
+      <a href="#" onClick="alert('coming soon!')">download random zine!</a><span class="info-span"> --> (???)</span>
+    </li>
   </ul>
-
-  <button onClick="alert('coming soon!')" class="random-zine">download random zine!</button>
 </body>
 </html>
