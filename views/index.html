@@ -110,7 +110,7 @@
         <a href="/login">log in</a>
       <% } else { %>
           you are currently logged in as --> 
-          <a href="/signup"><%= locals.user.username %></a> > 
+          <a href='/?user=<%= locals.user.username %>''><%= locals.user.username %></a> > 
           <form class="logout" action="/logout" method="post">
               <input class="logout-submit" type="submit" value="log out">
           </form>
