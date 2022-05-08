@@ -85,6 +85,19 @@
     background-color: lightgray;
     filter: saturate(0) contrast(20) invert(1);
   } */
+  form.logout {
+    display: inline;
+  }
+  input.logout-submit {
+    border: none;
+    background-color: #0000;
+    display: inline;
+    font-family: serif;
+    color: blue;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 </style>
 <body>
   <div class="navbar">
@@ -94,12 +107,11 @@
       you are currently not logged in --> 
       <a href="/signup">sign up</a> > 
       <a href="/login">log in</a> > 
-      <a href="/logout">log out</a>
-      <form action="/logout" method="post">
-          <input class="submit" type="submit" value="log out">
+      <form class="logout" action="/logout" method="post">
+          <input class="logout-submit" type="submit" value="log out">
       </form>
     </div>
-    <p>locals.user: <%= locals.user ? locals.user.username : 'no locals.user!' %></p>
+    <p>locals.user: <%= locals.user ? locals.user.username : 'no on logged in!' %></p>
   </div>
   
   <div class="buttons">

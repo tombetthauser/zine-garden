@@ -105,11 +105,28 @@
     </div>
   </div>
 
-  <form>
+  <!-- <form>
     <label>Username:</label>
     <input required type="text">
     <label>Password:</label>
     <input required type="password">
+    <input class="submit" type="submit" value="log in!">
+  </form> -->
+
+  <form action="/login" method="post">
+    <% if (errors.length) { %>
+      <ul class="errors">
+        <% for (let i=0; i < errors.length; i++) { %>
+          <li>Error: <%= errors[i] %>
+          </li>
+          <% } %>
+      </ul>
+    <% } %>
+    <input type="hidden" name="_csrf" value=<%=csrfToken %>>
+    <label>Username:</label>
+    <input required type="text" name="username" value=<%=user.username %>>
+    <label>Password:</label>
+    <input required type="password" name="password">
     <input class="submit" type="submit" value="log in!">
   </form>
 </body>

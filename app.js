@@ -165,7 +165,7 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
   const validatorErrors = validationResult(req);
 
   if (validatorErrors.isEmpty()) {
-    const user = db.User.findOne({ where: { username: username }});
+    const user = await db.User.findOne({ where: { username: username }});
     if (user !== null) {
       const passMatch = await bcrypt.compare(password, user.passwordHash.toString());
       if (passMatch) {
@@ -180,7 +180,7 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
   } else {
     errors = validatorErrors.array().map(error => error.msg)
   }
-  res.render(__dirname + '/views/login.html', { user, errors, csrfToken: req.csrfToken() });
+  res.render(__dirname + '/views/login.html', { user: "", errors, csrfToken: req.csrfToken() });
 }));
 
 app.post('/logout', (req, res) => {
