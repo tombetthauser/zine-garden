@@ -54,15 +54,15 @@
   ul.zine-links {
     margin-left: 20px;
   }
-  div.login-div {
+  div.auth-div {
     font-size: 12px;
     padding-top: 7.5px;
     margin-top: 0;
     margin-bottom: 15px;
     border-top: 0.5px solid #000;
-    width: 300px;
+    width: 350px;
   }
-  div.login-div a {
+  div.auth-div a {
     margin-left: 3px;
     margin-right: 3px;
   }
@@ -90,11 +90,16 @@
   <div class="navbar">
     <h1>Zine Garden 🌷</h1>
     <p>Welcome to the party!</p>
-    <div class="login-div">
+    <div class="auth-div">
       you are currently not logged in --> 
       <a href="/signup">sign up</a> > 
-      <a href="/login">log in</a>
+      <a href="/login">log in</a> > 
+      <a href="/logout">log out</a>
+      <form action="/logout" method="post">
+          <input class="submit" type="submit" value="log out">
+      </form>
     </div>
+    <p>locals.user: <%= locals.user ? locals.user.username : 'no locals.user!' %></p>
   </div>
   
   <div class="buttons">

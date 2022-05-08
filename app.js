@@ -68,6 +68,11 @@ testZines = [
 
 
 // ~~~~~~~~~~ Validations ~~~~~~~~~~
+const loginValidators = [
+  check('username').exists({ checkFalsy: true }).withMessage('please provide a username'),
+  check('password').exists({ checkFalsy: true }).withMessage('please provide a password')
+];
+
 const signupValidations = [
   check('username')
     .exists({ checkFalsy: true }).withMessage('please provide a username')
@@ -121,37 +126,69 @@ app.get('/upload', function (req, res) {
 });
 
 app.get('/login', csrfProtection, function (req, res) {
-  res.render(__dirname + '/views/login.html', {test: testZines});
+  if (res.locals.authenticated) {res.redirect('/')}
+  res.render(__dirname + '/views/login.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken()});
 });
 
 app.get('/signup', csrfProtection, function (req, res) {
+  if (res.locals.authenticated) {res.redirect('/')}
   res.render(__dirname + '/views/signup.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken()});
 });
 
 app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, res) => {
-    const { username, password, confirmPassword } = req.body;
+  const { username, password, confirmPassword } = req.body;
 
-    console.log({username, password})
-    const validatorErrors = validationResult(req);
-    const user = db.User.build({ username });
-    // const user = { username, password, confirmPassword };
+  console.log({username, password})
+  const validatorErrors = validationResult(req);
+  const user = db.User.build({ username });
+  // const user = { username, password, confirmPassword };
 
-    if (validatorErrors.isEmpty()) {
-      const passwordHash = await bcrypt.hashSync(password);
-      user.passwordHash = passwordHash;
-      user.userType = "normal";
-      await user.save();
-      loginUser(req, res, user);
-      req.session.save(() => {
-        res.redirect('/#success');
-      })
-    } else {
-      const errors = validatorErrors.array().map((error) => error.msg);
-      res.render(__dirname + '/views/signup.html', { user, errors, csrfToken: req.csrfToken() });
-      // res.redirect('/#failure');
+  if (validatorErrors.isEmpty()) {
+    const passwordHash = await bcrypt.hashSync(password);
+    user.passwordHash = passwordHash;
+    user.userType = "normal";
+    await user.save();
+    loginUser(req, res, user);
+    req.session.save(() => {
+      res.redirect('/');
+    })
+  } else {
+    const errors = validatorErrors.array().map((error) => error.msg);
+    res.render(__dirname + '/views/signup.html', { user, errors, csrfToken: req.csrfToken() });
+    // res.redirect('/#failure');
+  }
+}));
+
+app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+  let errors = [];
+  const validatorErrors = validationResult(req);
+
+  if (validatorErrors.isEmpty()) {
+    const user = db.User.findOne({ where: { username: username }});
+    if (user !== null) {
+      const passMatch = await bcrypt.compare(password, user.passwordHash.toString());
+      if (passMatch) {
+        loginUser(req, res, user);
+        req.session.save(() => {
+          res.redirect('/');
+        });
+        return;
+      }
     }
-  }));
+    errors.push('bad username and / or password');
+  } else {
+    errors = validatorErrors.array().map(error => error.msg)
+  }
+  res.render(__dirname + '/views/login.html', { user, errors, csrfToken: req.csrfToken() });
+}));
 
+app.post('/logout', (req, res) => {
+  logoutUser(req, res);
+  req.session.save(() => {
+    res.redirect('/');
+  })
+});
 
 
 // ~~~~~~~~~~ Error Handling ~~~~~~~~~~
