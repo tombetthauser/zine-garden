@@ -104,14 +104,18 @@
     <h1>Zine Garden 🌷</h1>
     <p>Welcome to the party!</p>
     <div class="auth-div">
-      you are currently not logged in --> 
-      <a href="/signup">sign up</a> > 
-      <a href="/login">log in</a> > 
-      <form class="logout" action="/logout" method="post">
-          <input class="logout-submit" type="submit" value="log out">
-      </form>
+      <% if (!locals.user) { %>
+        you are currently not logged in --> 
+        <a href="/signup">sign up</a> > 
+        <a href="/login">log in</a>
+      <% } else { %>
+          you are currently logged in as --> 
+          <a href="/signup"><%= locals.user.username %></a> > 
+          <form class="logout" action="/logout" method="post">
+              <input class="logout-submit" type="submit" value="log out">
+          </form>
+      <% } %>
     </div>
-    <p>locals.user: <%= locals.user ? locals.user.username : 'no on logged in!' %></p>
   </div>
   
   <div class="buttons">
