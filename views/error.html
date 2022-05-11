@@ -112,59 +112,19 @@
   <div class="navbar">
     <a class="no-underline" href="/">
       <h1>
-        Upload a Zine
+        Error!
         <!-- 🌷 -->
         <img class="title-gif"
           src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
         <!-- https://gifimage.net/gif-tree-8/ -->
       </h1>
-      <p>Add a printable PDF to Zine Garden!</p>
+      <p>Something bad happened!</p>
     </a>
-    <div class="login-div">
-      need to make a zine? -->
-      <a href="/make">make zine pdf</a> >
-      <a href="/">back to zines</a>
-    </div>
   </div>
-
-  <!-- <form>
-    <label>Printable Zine PDF:</label>
-    <input required type="file">
-    <label>Zine Title:</label>
-    <input required type="text">
-    <label>Zine Author:</label>
-    <input type="text">
-    <label>Production Location:</label>
-    <input type="text">
-    <label>Production Date:</label>
-    <input type="date">
-    <input class="submit" type="submit" value="Upload Zine!">
-  </form> -->
-
-  <form action="/upload" method="post">
-    <% if (errors.length) { %>
-      <ul class="errors">
-        <% for (let i=0; i < errors.length; i++) { %>
-          <li>Error: <%= errors[i] %>
-          </li>
-          <% } %>
-      </ul>
-      <% } %>
-      <input type="hidden" name="_csrf" value=<%=csrfToken %>>
-      <input type="hidden" name="user" value=<%= locals.user %>>
-      <label>Printable Zine PDF:</label>
-      <input required type="file" name="uploadFile">
-      <label>Zine Title:</label>
-      <input required type="text" name="title" value=<%= title %>>
-      <label>Zine Author:</label>
-      <input type="text" name="author" value=<%= author %>>
-      <label>Production Location:</label>
-      <input type="text" name="productionCity" value=<%= productionCity %>>
-      <label>Production Date:</label>
-      <input type="date" name="productionDate" value=<%= productionDate %>>
-      <input class="submit" type="submit" value="Upload Zine!">
-  </form>
-
+  <h2>Errors:</h2>
+  <p>
+    <%= err %>
+  </p>
 </body>
 
 </html>

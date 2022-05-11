@@ -10,14 +10,14 @@ const db = require('./db/models');
 // ~~~~~~~~~~ Auth Related? ~~~~~~~~~~
 const cookieParser = require('cookie-parser'); // <-- ?
 const session = require('express-session'); // <-- ?
-const { restoreUser } = require('./auth'); // <-- ?
+// const { restoreUser } = require('./auth'); // <-- ?
 const { environment, sessionSecret } = require('./config'); // <-- ?
 const { sequelize } = require('./db/models');
 const SequelizeStore = require('connect-session-sequelize')(session.Store); // <-- ?
 const store = new SequelizeStore({ db: sequelize }); // <-- ?
 const createError = require('http-errors');
 // const { csrfProtection, asyncHandler } = require('./utils');
-const { loginUser, logoutUser } = require('./auth');
+// const { loginUser, logoutUser } = require('./auth');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).catch(next);
@@ -26,7 +26,86 @@ const bcrypt = require('bcryptjs');
 
 
 
-// ~~~~~~~~~~ Basic Setup ~~~~~~~~~~
+// ~~~~~~~~~~ Auth Helper Functions ~~~~~~~~~~
+// import access to the database
+// const db = require('./db/models');
+
+/*
+  ~~~~~~ Log In ~~~~~~
+  This sets auth.userId to the req.session
+  by creating a little object and assigning
+  is to req.session.auth.
+*/
+const loginUser = (req, res, user) => {
+  req.session.auth = {
+    userId: user.id,
+  };
+};
+
+
+/*
+  ~~~~~~ Log Out ~~~~~~
+  This just deletes the entire
+  req.session.auth object.
+*/
+const logoutUser = (req, res) => {
+  delete req.session.auth;
+};
+
+
+/*
+  ~~~~~~ Require Login ~~~~~~
+  This checks res.locals.authenticated 
+  and redirects to login if it doesn't exist.
+  --> But where does res.locals get set?
+  --> Also what is the point of next()?
+*/
+const requireAuth = (req, res, next) => {
+  if (!res.locals.authenticated) {
+    return res.redirect('/login');
+  }
+  return next();
+};
+
+
+/*
+  ~~~~~~ Set User Object ~~~~~~
+  * This checks the req.session for that auth object
+  with the userId from the login function.
+  * If there is an auth object we pull the userId out and
+  try to query the database for the whole user.
+  * Then we set res.locals.authenticated to true and set
+  res.locals.user to the user's object.
+  * If the userId isn't in the database we set the locals.authenticated
+  to false and pass the caught error along with next().
+  * If the req.session.auth didn't exist to begin with we just
+  set res.locals.authenticated to false and call next().
+  * Regardless next() is called.
+  --> But where does this function actually get called?
+*/
+const restoreUser = async (req, res, next) => {
+  if (req.session.auth) {
+    const { userId } = req.session.auth;
+    try {
+      const user = await db.User.findByPk(userId);
+      if (user) {
+        res.locals.authenticated = true;
+        res.locals.user = user;
+        next();
+      }
+    } catch (err) {
+      res.locals.authenticated = false;
+      next(err);
+    }
+  } else {
+    res.locals.authenticated = false;
+    next();
+  }
+};
+
+
+
+// ~~~~~~~~~~ Basic App Setup ~~~~~~~~~~
 const app = express();
 
 app.use(express.static(__dirname + '/'));
@@ -109,20 +188,31 @@ const signupValidations = [
   // .withMessage('Password must contain at least 1 lowercase letter, uppercase letter, number, and special character (i.e. "!@#$%^&*")'),
 ];
 
+const uploadValidators = [
+  check('productionDate').custom(value => {
+    let enteredDate = new Date(value);
+    let todaysDate = new Date();
+    if (enteredDate > todaysDate) {
+      throw new Error("production date cannot be in future");
+    }
+    return true;
+  })
+];
+
 
 
 // ~~~~~~~~~~ Basic Setup ~~~~~~~~~~
 app.get('/', function (req, res) {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
-  res.render(__dirname + '/views/index.html', {test: testZines});
+  res.render(__dirname + '/views/index.html', { zines: testZines });
 });
 
-app.get('/make', function (req, res) {
-  res.render(__dirname + '/views/make.html', {test: testZines});
+app.get('/make', csrfProtection, function (req, res) {
+  res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 });
 
-app.get('/upload', function (req, res) {
-  res.render(__dirname + '/views/upload.html', {test: testZines});
+app.get('/upload', csrfProtection, function (req, res) {
+  res.render(__dirname + '/views/upload.html', { title: "jnjnjnj", author: "bbhjjb", productionCity: "ibuibuub", productionDate: "2012-12-03", errors: [], csrfToken: req.csrfToken() });
 });
 
 app.get('/login', csrfProtection, function (req, res) {
@@ -183,6 +273,35 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
   res.render(__dirname + '/views/login.html', { user: "", errors, csrfToken: req.csrfToken() });
 }));
 
+app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
+  const { user, uploadFile, title, author, productionCity, productionDate } = req.body;
+  let errors = [];
+
+  console.log(req.body);
+
+  const validatorErrors = validationResult(req);
+  // errors.push('test error');
+
+  if (validatorErrors.isEmpty()) {
+    const zine = await db.Zine.findOne({ where: { title: title }});
+    if (zine !== null) {
+      errors.push('zine title already in use');
+      // res.redirect('/');
+      // return;
+    } else {
+      const url = "https://www.google.com" // <-- placeholder - save to aws and get real url
+      const userId = user ? user.id : null;
+      const newZine = db.Zine.build({ url, title, userId, author, productionCity, productionDate });
+      await newZine.save();
+      res.redirect("/#upload-success!");
+      return;
+    }
+  } else {
+    errors = validatorErrors.array().map(error => error.msg)
+  }
+  res.render(__dirname + '/views/upload.html', { title: "ddddddd", author: "aaaaaa", productionCity: "ooooooo", productionDate: "2014-12-03", errors, csrfToken: req.csrfToken() });
+}));
+
 app.post('/logout', (req, res) => {
   logoutUser(req, res);
   req.session.save(() => {
@@ -205,73 +324,8 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('./views/error.pug');
+  res.render('./views/error.html', { err });
 });
-
-
-
-
-
-
-// app.listen(port);
-// console.log('Server started at http://localhost:' + port);
-
-// const express = require('express');
-// const logger = require('morgan');
-// const cookieParser = require('cookie-parser');
-// const session = require('express-session');
-
-// const createError = require('http-errors');
-// const path = require('path');
-// const { sequelize } = require('./db/models');
-// const SequelizeStore = require('connect-session-sequelize')(session.Store);
-// const indexRouter = require('./routes/index');
-// const usersRouter = require('./routes/users');
-
-// const app = express();
-
-// // view engine setup
-// app.set('view engine', 'pug');
-
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// // set up session middleware
-// const store = new SequelizeStore({ db: sequelize });
-
-// app.use(
-//   session({
-//     secret: 'superSecret',
-//     store,
-//     saveUninitialized: false,
-//     resave: false,
-//   })
-// );
-
-// // create Session table if it doesn't already exist
-// store.sync();
-
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-
-// // catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
-
-// // error handler
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
 
 
 

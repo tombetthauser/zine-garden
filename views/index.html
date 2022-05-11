@@ -98,11 +98,31 @@
     text-decoration: underline;
     cursor: pointer;
   }
+  a button {
+    cursor: pointer;
+  }
+  .title-gif {
+    display: inline-block;
+    width: 70px;
+    margin-bottom: -10px;
+    margin-left: -7px;
+  }
+  .no-underline {
+    text-decoration: none;
+    color: #000;
+  }
 </style>
 <body>
   <div class="navbar">
-    <h1>Zine Garden 🌷</h1>
-    <p>Welcome to the party!</p>
+    <a href="/" class="no-underline">
+      <h1>
+        Zine Garden
+        <!-- 🌷 -->
+        <img class="title-gif" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
+        <!-- https://gifimage.net/gif-tree-8/ -->
+      </h1>
+      <p>Welcome to the party!</p>
+    </a>
     <div class="auth-div">
       <% if (!locals.user) { %>
         you are currently not logged in --> 
@@ -128,11 +148,11 @@
   </p>
 
   <ul class="zine-links">
-    <% for (let i = 0; i < test.length; i++) { %>
+    <% for (let i = 0; i < zines.length; i++) { %>
       <li>
-        <a target="new" href=<%= test[i].url %>><%= test[i].name %></a>
+        <a target="new" href=<%= zines[i].url %>><%= zines[i].name %></a>
           <span class="info-span">
-            <%= ` --> ` + test[i].city + " (" + test[i].date + `)`%>
+            <%= ` --> ` + zines[i].city + " (" + zines[i].date + `)`%>
           </span>
       </li>
     <% } %>

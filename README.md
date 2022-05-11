@@ -71,8 +71,25 @@ Use this project skeleton as a starting point for structuring your app. Things t
 * still reliant on a couple of libraries that might be unnecessary
   * including express-validators
 
+* consolidated auth.js helper functions into app.js
+
 * going back to database work to confirm and persist signup form
 * first need to migrate pending users migrations
 
 * double-checked that migration file was in line with desired model then tried
-  * npx dotenv sequelize-cli db:migrate
+
+* create new migration for zines
+
+```bash
+  npx sequelize-cli model:generate --name Zine --attributes url:string,title:string,userId:integer,author:integer,productionCity:string,productionDate:date
+```
+
+* npx dotenv sequelize-cli db:migrate
+
+## TO RESET THE DATABASE
+
+* $ npx dotenv sequelize-cli db:drop
+* $ npx dotenv sequelize-cli db:create
+* $ npx dotenv sequelize-cli db:migrate
+* $ npx dotenv sequelize-cli db:seed:all
+
