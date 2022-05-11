@@ -145,13 +145,18 @@
     <% if (errors.length) { %>
       <ul class="errors">
         <% for (let i=0; i < errors.length; i++) { %>
-          <li>Error: <%= errors[i] %>
-          </li>
+          <li>Error: <%= errors[i] %></li>
           <% } %>
       </ul>
       <% } %>
       <input type="hidden" name="_csrf" value=<%=csrfToken %>>
-      <input type="hidden" name="user" value=<%= locals.user %>>
+      <% if (locals.user) { %>
+        <%= locals.user.id %>
+        <input type="hidden" name="userId" value=<%= locals.user.id %>>
+        <% } else { %>
+          <%= "no user!" %>
+          <input type="hidden" name="user" value=<%= null %>>
+      <% } %>
       <label>Printable Zine PDF:</label>
       <input required type="file" name="uploadFile">
       <label>Zine Title:</label>
@@ -166,5 +171,4 @@
   </form>
 
 </body>
-
 </html>

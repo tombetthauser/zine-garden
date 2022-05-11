@@ -138,14 +138,6 @@ store.sync();
 
 
 
-// ~~~~~~~~~~ Dummy Data ~~~~~~~~~~
-testZines = [
-  { name: "the cats of star trek", url: "http://www.google.com", author: "elliot s", city: "San Francisco, CA", date: new Date().getFullYear()},
-  { name: "getting over being me", url: "http://www.google.com", author: "diana m", city: "Bozeman, MT", date: new Date().getFullYear()},
-  { name: "a art bums guide to chicago", url: "http://www.google.com", author: "brady", city: "Santa Fe, NM", date: new Date().getFullYear()},
-]
-
-
 // ~~~~~~~~~~ Validations ~~~~~~~~~~
 const loginValidators = [
   check('username').exists({ checkFalsy: true }).withMessage('please provide a username'),
@@ -202,10 +194,11 @@ const uploadValidators = [
 
 
 // ~~~~~~~~~~ Basic Setup ~~~~~~~~~~
-app.get('/', function (req, res) {
+app.get('/', csrfProtection, asyncHandler(async (req, res) => {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
-  res.render(__dirname + '/views/index.html', { zines: testZines });
-});
+  const zines = await db.Zine.findAll()
+  res.render(__dirname + '/views/index.html', { allZines: zines, csrfToken: req.csrfToken() });
+}));
 
 app.get('/make', csrfProtection, function (req, res) {
   res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
@@ -274,7 +267,7 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
 }));
 
 app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
-  const { user, uploadFile, title, author, productionCity, productionDate } = req.body;
+  const { userId, uploadFile, title, author, productionCity, productionDate } = req.body;
   let errors = [];
 
   console.log(req.body);
@@ -290,7 +283,6 @@ app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, r
       // return;
     } else {
       const url = "https://www.google.com" // <-- placeholder - save to aws and get real url
-      const userId = user ? user.id : null;
       const newZine = db.Zine.build({ url, title, userId, author, productionCity, productionDate });
       await newZine.save();
       res.redirect("/#upload-success!");

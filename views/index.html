@@ -111,6 +111,17 @@
     text-decoration: none;
     color: #000;
   }
+  .delete-form {
+    display: inline-block;
+  }
+  .delete-button {
+    display: inline-block;
+    cursor: pointer;
+  }
+  .delete-button:hover {
+    background-color: red;
+    color: white;
+  }
 </style>
 <body>
   <div class="navbar">
@@ -148,12 +159,22 @@
   </p>
 
   <ul class="zine-links">
-    <% for (let i = 0; i < zines.length; i++) { %>
+    <% for (let i = 0; i < allZines.length; i++) { %>
       <li>
-        <a target="new" href=<%= zines[i].url %>><%= zines[i].name %></a>
-          <span class="info-span">
-            <%= ` --> ` + zines[i].city + " (" + zines[i].date + `)`%>
-          </span>
+        <a target="new" href=<%= allZines[i].url %>><%= allZines[i].title %></a>
+        <span class="info-span">
+          <%= ` --> ` + allZines[i].productionCity + " (" + allZines[i].productionDate.getFullYear() + `)`%>
+        </span>
+        <% if (locals.user) { %>
+          <% if (locals.user.userType === "admin" || parseInt(allZines[i].userId) === parseInt(locals.user.id)) { %>
+            <form class="delete-form" action="/delete" method="post">
+              <input type="hidden" name="_csrf" value=<%=csrfToken %>>
+              <input type="hidden" name="user" value=<%=locals.user %>>
+              <input type="hidden" name="post" value=<%=allZines[i] %>>
+              <input class="delete-button" type="submit" value="delete">
+            </form>
+          <% } %>
+        <% } %>
       </li>
     <% } %>
     <li>
