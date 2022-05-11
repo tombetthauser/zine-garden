@@ -148,26 +148,22 @@
           <li>Error: <%= errors[i] %></li>
           <% } %>
       </ul>
-      <% } %>
-      <input type="hidden" name="_csrf" value=<%=csrfToken %>>
-      <% if (locals.user) { %>
-        <%= locals.user.id %>
-        <input type="hidden" name="userId" value=<%= locals.user.id %>>
-        <% } else { %>
-          <%= "no user!" %>
-          <input type="hidden" name="user" value=<%= null %>>
-      <% } %>
-      <label>Printable Zine PDF:</label>
-      <input required type="file" name="uploadFile">
-      <label>Zine Title:</label>
-      <input required type="text" name="title" value=<%= title %>>
-      <label>Zine Author:</label>
-      <input type="text" name="author" value=<%= author %>>
-      <label>Production Location:</label>
-      <input type="text" name="productionCity" value=<%= productionCity %>>
-      <label>Production Date:</label>
-      <input type="date" name="productionDate" value=<%= productionDate %>>
-      <input class="submit" type="submit" value="Upload Zine!">
+    <% } %>
+    <% if (locals.user) { %>
+      <input type="hidden" name="userId" value=<%= locals.user.id %>>
+    <% } %>
+    <input type="hidden" name="_csrf" value=<%=csrfToken %>>
+    <label>Printable Zine PDF:</label>
+    <input required type="file" name="uploadFile">
+    <label>Zine Title:</label>
+    <input required type="text" name="title" value=<%= title %>>
+    <label>Zine Author:</label>
+    <input type="text" name="author" value=<%= author %>>
+    <label>Production Location:</label>
+    <input type="text" name="productionCity" value=<%= productionCity %>>
+    <label>Production Date:</label>
+    <input type="date" name="productionDate" value=<%= productionDate %>>
+    <input class="submit" type="submit" value="Upload Zine!">
   </form>
 
 </body>

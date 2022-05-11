@@ -117,10 +117,14 @@
   .delete-button {
     display: inline-block;
     cursor: pointer;
+    font-size: 10px;
   }
   .delete-button:hover {
-    background-color: red;
+    background-color: darkred;
+    border-color: darkred;
     color: white;
+    /* border: 1px solid gray; */
+    border-radius: 3px;
   }
 </style>
 <body>
@@ -166,12 +170,12 @@
           <%= ` --> ` + allZines[i].productionCity + " (" + allZines[i].productionDate.getFullYear() + `)`%>
         </span>
         <% if (locals.user) { %>
-          <% if (locals.user.userType === "admin" || parseInt(allZines[i].userId) === parseInt(locals.user.id)) { %>
+          <% if (locals.user.username === "tom" || parseInt(allZines[i].userId) === parseInt(locals.user.id)) { %>
             <form class="delete-form" action="/delete" method="post">
               <input type="hidden" name="_csrf" value=<%=csrfToken %>>
-              <input type="hidden" name="user" value=<%=locals.user %>>
-              <input type="hidden" name="post" value=<%=allZines[i] %>>
-              <input class="delete-button" type="submit" value="delete">
+              <input type="hidden" name="userId" value=<%=locals.user.id %>>
+              <input type="hidden" name="zineId" value=<%=allZines[i].id %>>
+              <input class="delete-button" type="submit" value="delete" onclick="return confirm('Are you sure you want to delete this zine? This action cannot be undone.')">
             </form>
           <% } %>
         <% } %>

@@ -301,6 +301,18 @@ app.post('/logout', (req, res) => {
   })
 });
 
+app.post('/delete', csrfProtection, asyncHandler(async (req, res) => {
+  const { userId, zineId } = req.body;
+  console.log("\n\n\n", { userId, zineId }, "\n\n\n");
+  const zine = await db.Zine.findOne({ where: { id: zineId } });
+  const user = await db.User.findOne({ where: { id: userId } });
+  
+  if (user.username === 'tom' || user.id === zine.userId) {
+    zine.destroy();
+  }
+  res.redirect('/');
+}));
+
 
 // ~~~~~~~~~~ Error Handling ~~~~~~~~~~
 // catch 404 and forward to error handler
