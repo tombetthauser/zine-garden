@@ -7,4 +7,7 @@ module.exports = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
   },
+  // bucketName: process.env.S3_BUCKET,
+  // accessKey: process.env.S3_KEY,
+  // secretKey: process.env.S3_SECRET
 };

@@ -141,7 +141,7 @@
     <input class="submit" type="submit" value="Upload Zine!">
   </form> -->
 
-  <form action="/upload" method="post">
+  <form action="/upload" method="post" enctype="multipart/form-data">
     <% if (errors.length) { %>
       <ul class="errors">
         <% for (let i=0; i < errors.length; i++) { %>

@@ -93,3 +93,9 @@ Use this project skeleton as a starting point for structuring your app. Things t
 * $ npx dotenv sequelize-cli db:migrate
 * $ npx dotenv sequelize-cli db:seed:all
 
+* got delete conditionally rendering and working on the backend
+* now getting aws integrated
+
+## AWS Integration
+
+* npm install @aws-sdk/client-s3

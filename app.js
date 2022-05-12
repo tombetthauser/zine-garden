@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080;
 const db = require('./db/models');
 
 
-// ~~~~~~~~~~ Auth Related? ~~~~~~~~~~
+// ~~~~~~~~~~ Auth Related ~~~~~~~~~~
 const cookieParser = require('cookie-parser'); // <-- ?
 const session = require('express-session'); // <-- ?
 // const { restoreUser } = require('./auth'); // <-- ?
@@ -24,6 +24,26 @@ const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).ca
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
+
+// ~~~~~~~~~~ Old AWS Related ~~~~~~~~~~
+// const { accessKey, secretKey, bucketName } = require('./config');
+// const AWS = require('aws-sdk');
+// const multer = require('multer');
+// const multers3 = require('multer-s3');
+// AWS.config.update({
+  //   accessKeyId: accessKey,
+  //   secretAccessKey: secretKey
+// });
+// const s3 = new AWS.S3();
+
+
+// ~~~~~~~~~~ Old AWS Related ~~~~~~~~~~
+const {
+  singleMulterUpload,
+  singlePublicFileUpload,
+  multipleMulterUpload,
+  multiplePublicFileUpload,
+} = require("./aws.js");
 
 
 // ~~~~~~~~~~ Auth Helper Functions ~~~~~~~~~~
@@ -116,8 +136,8 @@ app.set('views', __dirname);
 
 
 
-// ~~~~~~~~~~ Auth Related? ~~~~~~~~~~
-app.use(express.json()); // <-- ?
+// ~~~~~~~~~~ Auth Related ~~~~~~~~~~
+app.use(express.json()); // <-- ? in AWS setup also
 app.use(cookieParser(sessionSecret)); // <-- ?
 app.use(session({
     secret: 'secret',
@@ -125,7 +145,7 @@ app.use(session({
     saveUninitialized: false,
     store,
 })); // <-- ?
-app.use(express.urlencoded({ extended: false })); // <-- ?
+app.use(express.urlencoded({ extended: false })); // <-- ? in AWS setup also
 app.use(restoreUser); // <-- ?
 // prevents caching, seems to help a little possibly but not totally fixed
 app.use((_req, res, next) => {
@@ -135,6 +155,35 @@ app.use((_req, res, next) => {
 // create Session table if it doesn't already exist
 // wouldn't be necessary if you created a migration for the session table
 store.sync();
+
+
+
+// ~~~~~~~~~~ AWS Related ~~~~~~~~~~
+// app.use(express.urlencoded({ extended: false })); <-- already elsewhere in setup
+// app.use(express.json()); <-- already elsewhere in setup
+// app.use(multer({ // https://github.com/expressjs/multer <-- 
+//   dest: './public/uploads/', 
+//   limits : { fileSize:100000 },
+//   rename: function (fieldname, filename) {
+//     return filename.replace(/\W+/g, '-').toLowerCase();
+//   },
+//   onFileUploadData: function (file, data, req, res) {
+//     // file : { fieldname, originalname, name, encoding, mimetype, path, extension, size, truncated, buffer }
+//     const params = {
+//       Bucket: bucketName,
+//       Key: file.name,
+//       Body: data
+//     };
+
+//     s3.putObject(params, function (perr, pres) {
+//       if (perr) {
+//         console.log("Error uploading data: ", perr);
+//       } else {
+//         console.log("Successfully uploaded data to myBucket/myKey");
+//       }
+//     });
+//   }
+// }));
 
 
 
@@ -193,7 +242,7 @@ const uploadValidators = [
 
 
 
-// ~~~~~~~~~~ Basic Setup ~~~~~~~~~~
+// ~~~~~~~~~~ Routes ~~~~~~~~~~
 app.get('/', csrfProtection, asyncHandler(async (req, res) => {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
   const zines = await db.Zine.findAll()
@@ -266,11 +315,30 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
   res.render(__dirname + '/views/login.html', { user: "", errors, csrfToken: req.csrfToken() });
 }));
 
-app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
-  const { userId, uploadFile, title, author, productionCity, productionDate } = req.body;
-  let errors = [];
 
-  console.log(req.body);
+// app.post('/upload', uploadS3.single('file'), (req, res) => {
+//   console.log(req.file);
+//   res.redirect('/#aws-done!')
+// });
+
+app.post('/upload-test', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
+  fileUrl = await singlePublicFileUpload(req.file);
+  res.redirect(fileUrl)
+}));
+
+app.post('/upload', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
+// app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
+  // res.removeHeader("Content-Type");
+  const { userId, title, author, productionCity, productionDate } = req.body;
+
+  // console.log({ "req.file": req.file });
+  // let fileUrl = undefined;
+  // try {
+    // } catch {
+      //   fileUrl = "error!";
+  // }
+  
+  let errors = [];
 
   const validatorErrors = validationResult(req);
   // errors.push('test error');
@@ -283,7 +351,11 @@ app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, r
       // return;
     } else {
       const url = "https://www.google.com" // <-- placeholder - save to aws and get real url
-      const newZine = db.Zine.build({ url, title, userId, author, productionCity, productionDate });
+      const fileUrl = await singlePublicFileUpload(req.file);
+      // const fileUrl = "/#none";
+      const newZine = db.Zine.build({ 
+        url: fileUrl, title, userId, author, productionCity, productionDate 
+      });
       await newZine.save();
       res.redirect("/#upload-success!");
       return;
@@ -291,8 +363,35 @@ app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, r
   } else {
     errors = validatorErrors.array().map(error => error.msg)
   }
-  res.render(__dirname + '/views/upload.html', { title: "ddddddd", author: "aaaaaa", productionCity: "ooooooo", productionDate: "2014-12-03", errors, csrfToken: req.csrfToken() });
+  res.render(__dirname + '/views/upload.html', { title, author, productionCity, productionDate, errors, csrfToken: req.csrfToken() });
 }));
+
+// app.post('/foo', requireAuth, asyncHandler(async (req, res, next) => {
+//   const currUser = req.user.dataValues;
+//   const form = new formidable.IncomingForm();
+//   await form.parse(req, async (err, fields, files) => {
+//     await fs.readFile(files.audioFile.filepath, async (err, data) => {
+//       const filenameExtension = files.audioFile.originalFilename;
+//       const extension = filenameExtension.split('.')[1]
+//       const params = {
+//         Bucket: bucketName,
+//         Key: `${fields.songTitle}-${currUser.username}.${extension}`,
+//         Body: data
+//       }
+//       await s3.upload(params, async (err, data) => {
+//         let insertSong = await Song.create({
+//           name: fields.songTitle,
+//           song_url: data.Location,
+//           genre: { "aqustic": "true" },
+//           user_id: currUser.id,
+//           album_id: fields.albumId
+//         })
+//         res.json({ insertSong })
+//       })
+//     })
+//   })
+
+// }));
 
 app.post('/logout', (req, res) => {
   logoutUser(req, res);
@@ -306,7 +405,7 @@ app.post('/delete', csrfProtection, asyncHandler(async (req, res) => {
   console.log("\n\n\n", { userId, zineId }, "\n\n\n");
   const zine = await db.Zine.findOne({ where: { id: zineId } });
   const user = await db.User.findOne({ where: { id: userId } });
-  
+
   if (user.username === 'tom' || user.id === zine.userId) {
     zine.destroy();
   }
