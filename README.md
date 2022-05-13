@@ -139,3 +139,18 @@ Use this project skeleton as a starting point for structuring your app. Things t
     }
   };
 ```
+
+* this seemed to stop the heroku "check log --tails" crash
+* then just had to run --> heroku run npx sequelize-cli db:migrate
+* these are some other useful heroku sequelize commands:
+  * heroku run npx sequelize-cli db:seed:undo:all
+  * heroku run npx sequelize-cli db:migrate:undo:all
+  * heroku run npx sequelize-cli db:seed:all
+
+
+## DNS Rerouting
+
+* purchased domain on dreamhost
+* started following instructions at <https://devcenter.heroku.com/articles/custom-domains>
+* first ran --> $ heroku domains:add www.zine.garden
+* to see records to put into dreamhost had to run --> $ heroku domains
