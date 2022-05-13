@@ -90,6 +90,7 @@ const multipleMulterUpload = (nameOfKey) =>
 
 module.exports = {
   s3,
+  NAME_OF_BUCKET,
   singlePublicFileUpload,
   multiplePublicFileUpload,
   singlePrivateFileUpload,

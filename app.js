@@ -39,6 +39,8 @@ const bcrypt = require('bcryptjs');
 
 // ~~~~~~~~~~ Old AWS Related ~~~~~~~~~~
 const {
+  s3,
+  NAME_OF_BUCKET,
   singleMulterUpload,
   singlePublicFileUpload,
   multipleMulterUpload,
@@ -366,32 +368,6 @@ app.post('/upload', singleMulterUpload("uploadFile"), csrfProtection, uploadVali
   res.render(__dirname + '/views/upload.html', { title, author, productionCity, productionDate, errors, csrfToken: req.csrfToken() });
 }));
 
-// app.post('/foo', requireAuth, asyncHandler(async (req, res, next) => {
-//   const currUser = req.user.dataValues;
-//   const form = new formidable.IncomingForm();
-//   await form.parse(req, async (err, fields, files) => {
-//     await fs.readFile(files.audioFile.filepath, async (err, data) => {
-//       const filenameExtension = files.audioFile.originalFilename;
-//       const extension = filenameExtension.split('.')[1]
-//       const params = {
-//         Bucket: bucketName,
-//         Key: `${fields.songTitle}-${currUser.username}.${extension}`,
-//         Body: data
-//       }
-//       await s3.upload(params, async (err, data) => {
-//         let insertSong = await Song.create({
-//           name: fields.songTitle,
-//           song_url: data.Location,
-//           genre: { "aqustic": "true" },
-//           user_id: currUser.id,
-//           album_id: fields.albumId
-//         })
-//         res.json({ insertSong })
-//       })
-//     })
-//   })
-
-// }));
 
 app.post('/logout', (req, res) => {
   logoutUser(req, res);
@@ -406,10 +382,26 @@ app.post('/delete', csrfProtection, asyncHandler(async (req, res) => {
   const zine = await db.Zine.findOne({ where: { id: zineId } });
   const user = await db.User.findOne({ where: { id: userId } });
 
+  const awsFileSplit = zine.url.split("/");
+  const awsFileName = awsFileSplit[awsFileSplit.length - 1];
+
+  console.log(awsFileName);
+
   if (user.username === 'tom' || user.id === zine.userId) {
-    zine.destroy();
+    const deleteParams = {
+      Bucket: "zine-garden",
+      Key: awsFileName
+    }
+    // await s3.deleteObject(deleteParams);
+    try {
+      await s3.deleteObject(deleteParams, (err, data) => {
+        zine.destroy();
+        res.redirect('/');
+      })
+    } catch {
+      res.redirect('/#delete-fail');
+    }
   }
-  res.redirect('/');
 }));
 
 
