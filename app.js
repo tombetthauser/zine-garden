@@ -246,28 +246,33 @@ const uploadValidators = [
 
 // ~~~~~~~~~~ Routes ~~~~~~~~~~
 app.get('/', csrfProtection, asyncHandler(async (req, res) => {
-  // res.sendFile(path.join(__dirname, '/views/test.html'), {"test":"TEST!"});
+  // res.sendFile(path.join(__dirname, '/views/test.html'), {"foo":"bar"});
   const zines = await db.Zine.findAll()
   res.render(__dirname + '/views/index.html', { allZines: zines, csrfToken: req.csrfToken() });
 }));
+
 
 app.get('/make', csrfProtection, function (req, res) {
   res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 });
 
+
 app.get('/upload', csrfProtection, function (req, res) {
-  res.render(__dirname + '/views/upload.html', { title: "jnjnjnj", author: "bbhjjb", productionCity: "ibuibuub", productionDate: "2012-12-03", errors: [], csrfToken: req.csrfToken() });
+  res.render(__dirname + '/views/upload.html', { title: "", author: "", productionCity: "", productionDate: "", errors: [], csrfToken: req.csrfToken() });
 });
+
 
 app.get('/login', csrfProtection, function (req, res) {
   if (res.locals.authenticated) {res.redirect('/')}
   res.render(__dirname + '/views/login.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken()});
 });
 
+
 app.get('/signup', csrfProtection, function (req, res) {
   if (res.locals.authenticated) {res.redirect('/')}
   res.render(__dirname + '/views/signup.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken()});
 });
+
 
 app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, res) => {
   const { username, password, confirmPassword } = req.body;
@@ -275,7 +280,6 @@ app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, 
   console.log({username, password})
   const validatorErrors = validationResult(req);
   const user = db.User.build({ username });
-  // const user = { username, password, confirmPassword };
 
   if (validatorErrors.isEmpty()) {
     const passwordHash = await bcrypt.hashSync(password);
@@ -289,7 +293,6 @@ app.post('/signup', csrfProtection, signupValidations, asyncHandler(async (req, 
   } else {
     const errors = validatorErrors.array().map((error) => error.msg);
     res.render(__dirname + '/views/signup.html', { user, errors, csrfToken: req.csrfToken() });
-    // res.redirect('/#failure');
   }
 }));
 
@@ -318,43 +321,17 @@ app.post('/login', csrfProtection, loginValidators, asyncHandler(async (req, res
 }));
 
 
-// app.post('/upload', uploadS3.single('file'), (req, res) => {
-//   console.log(req.file);
-//   res.redirect('/#aws-done!')
-// });
-
-app.post('/upload-test', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
-  fileUrl = await singlePublicFileUpload(req.file);
-  res.redirect(fileUrl)
-}));
-
 app.post('/upload', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
-// app.post('/upload', csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
-  // res.removeHeader("Content-Type");
   const { userId, title, author, productionCity, productionDate } = req.body;
-
-  // console.log({ "req.file": req.file });
-  // let fileUrl = undefined;
-  // try {
-    // } catch {
-      //   fileUrl = "error!";
-  // }
-  
-  let errors = [];
-
   const validatorErrors = validationResult(req);
-  // errors.push('test error');
+  let errors = [];
 
   if (validatorErrors.isEmpty()) {
     const zine = await db.Zine.findOne({ where: { title: title }});
     if (zine !== null) {
       errors.push('zine title already in use');
-      // res.redirect('/');
-      // return;
     } else {
-      const url = "https://www.google.com" // <-- placeholder - save to aws and get real url
       const fileUrl = await singlePublicFileUpload(req.file);
-      // const fileUrl = "/#none";
       const newZine = db.Zine.build({ 
         url: fileUrl, title, userId, author, productionCity, productionDate 
       });
@@ -378,29 +355,17 @@ app.post('/logout', (req, res) => {
 
 app.post('/delete', csrfProtection, asyncHandler(async (req, res) => {
   const { userId, zineId } = req.body;
-  console.log("\n\n\n", { userId, zineId }, "\n\n\n");
   const zine = await db.Zine.findOne({ where: { id: zineId } });
   const user = await db.User.findOne({ where: { id: userId } });
 
   const awsFileSplit = zine.url.split("/");
   const awsFileName = awsFileSplit[awsFileSplit.length - 1];
 
-  console.log(awsFileName);
-
   if (user.username === 'tom' || user.id === zine.userId) {
-    const deleteParams = {
-      Bucket: "zine-garden",
-      Key: awsFileName
-    }
-    // await s3.deleteObject(deleteParams);
-    try {
-      await s3.deleteObject(deleteParams, (err, data) => {
-        zine.destroy();
-        res.redirect('/');
-      })
-    } catch {
-      res.redirect('/#delete-fail');
-    }
+    await s3.deleteObject({ Bucket: "zine-garden", Key: awsFileName }, (err, data) => {
+      zine.destroy();
+      res.redirect('/');
+    })
   }
 }));
 
