@@ -99,3 +99,6 @@ Use this project skeleton as a starting point for structuring your app. Things t
 ## AWS Integration
 
 * npm install @aws-sdk/client-s3
+* followed s3-express demo repo / copied repo onto my github
+* had to add enctype="multipart/form-data" to form to get everything working
+* the rest ended up being pretty boilerplate but irritating to piece together
