@@ -10,14 +10,11 @@ const db = require('./db/models');
 // ~~~~~~~~~~ Auth Related ~~~~~~~~~~
 const cookieParser = require('cookie-parser'); // <-- ?
 const session = require('express-session'); // <-- ?
-// const { restoreUser } = require('./auth'); // <-- ?
 const { environment, sessionSecret } = require('./config'); // <-- ?
 const { sequelize } = require('./db/models');
 const SequelizeStore = require('connect-session-sequelize')(session.Store); // <-- ?
 const store = new SequelizeStore({ db: sequelize }); // <-- ?
 const createError = require('http-errors');
-// const { csrfProtection, asyncHandler } = require('./utils');
-// const { loginUser, logoutUser } = require('./auth');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 const asyncHandler = (handler) => (req, res, next) => handler(req, res, next).catch(next);
@@ -25,19 +22,7 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
 
-// ~~~~~~~~~~ Old AWS Related ~~~~~~~~~~
-// const { accessKey, secretKey, bucketName } = require('./config');
-// const AWS = require('aws-sdk');
-// const multer = require('multer');
-// const multers3 = require('multer-s3');
-// AWS.config.update({
-  //   accessKeyId: accessKey,
-  //   secretAccessKey: secretKey
-// });
-// const s3 = new AWS.S3();
-
-
-// ~~~~~~~~~~ Old AWS Related ~~~~~~~~~~
+// ~~~~~~~~~~ AWS Related ~~~~~~~~~~
 const {
   s3,
   NAME_OF_BUCKET,
@@ -51,6 +36,7 @@ const {
 // ~~~~~~~~~~ Auth Helper Functions ~~~~~~~~~~
 // import access to the database
 // const db = require('./db/models');
+
 
 /*
   ~~~~~~ Log In ~~~~~~
@@ -160,35 +146,6 @@ store.sync();
 
 
 
-// ~~~~~~~~~~ AWS Related ~~~~~~~~~~
-// app.use(express.urlencoded({ extended: false })); <-- already elsewhere in setup
-// app.use(express.json()); <-- already elsewhere in setup
-// app.use(multer({ // https://github.com/expressjs/multer <-- 
-//   dest: './public/uploads/', 
-//   limits : { fileSize:100000 },
-//   rename: function (fieldname, filename) {
-//     return filename.replace(/\W+/g, '-').toLowerCase();
-//   },
-//   onFileUploadData: function (file, data, req, res) {
-//     // file : { fieldname, originalname, name, encoding, mimetype, path, extension, size, truncated, buffer }
-//     const params = {
-//       Bucket: bucketName,
-//       Key: file.name,
-//       Body: data
-//     };
-
-//     s3.putObject(params, function (perr, pres) {
-//       if (perr) {
-//         console.log("Error uploading data: ", perr);
-//       } else {
-//         console.log("Successfully uploaded data to myBucket/myKey");
-//       }
-//     });
-//   }
-// }));
-
-
-
 // ~~~~~~~~~~ Validations ~~~~~~~~~~
 const loginValidators = [
   check('username').exists({ checkFalsy: true }).withMessage('please provide a username'),
@@ -224,11 +181,6 @@ const signupValidations = [
     }
     return true;
   }),
-
-  // optionally check password for special characters etc
-  // check('password')
-  // .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'g')
-  // .withMessage('Password must contain at least 1 lowercase letter, uppercase letter, number, and special character (i.e. "!@#$%^&*")'),
 ];
 
 const uploadValidators = [
