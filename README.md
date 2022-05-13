@@ -107,3 +107,35 @@ Use this project skeleton as a starting point for structuring your app. Things t
 
 * heroku create -a example-app
 * git push heroku main
+
+* went through heroku and you instructions in mfahole / slacker-news repo
+* checked config vars on heroku
+* on heroku DATABASE_URL stands in for DB_USERNAME, DB_PASSWORD, DB_DATABASE in .env
+* then had to add to update config/database.js to have production section like this
+
+```javascript
+  const {
+    db: { username, password, database, host },
+  } = require('./index');
+
+  module.exports = {
+    development: {
+      username,
+      password,
+      database,
+      host,
+      dialect: 'postgres',
+      seederStorage: 'sequelize',
+    },
+    production: {
+      use_env_variable: 'DATABASE_URL',
+      dialect: 'postgres',
+      seederStorage: 'sequelize',
+      dialectOptions: {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    }
+  };
+```
