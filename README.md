@@ -175,4 +175,11 @@ Use this project skeleton as a starting point for structuring your app. Things t
 * checked free dyno hours with:
   * $ heroku ps -a app-name
 * still had 500 free hours remaining
-* stack overflow thread indicated 
+
+* removed buildpack from heroku browser interface
+* looked up how to install imagemagick via heroku docs
+* installed imagemagick through the cli
+  * $ heroku buildpacks:add https://github.com/DuckyTeam/heroku-buildpack-imagemagick --index 1 --app zine-garden
+  * then made a trivial text change and ran $ git push heroku main
+
+* Now it works!

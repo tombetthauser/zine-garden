@@ -280,6 +280,7 @@ const uploadValidators = [
 
 // ~~~~~~~~~~ Temp PDF maker route ~~~~~~~~~~
 app.post('/merge', upload.array('files', 100), (req, res) => {
+  let extraMagick = ["-monochrome"];
   list = ""
   if (req.files) {
     req.files.forEach(file => {
@@ -291,7 +292,7 @@ app.post('/merge', upload.array('files', 100), (req, res) => {
 
     console.log(list)
 
-    exec(`magick convert ${list} ${outputFilePath}`, (err, stdout, stderr) => {
+    exec(`magick convert ${extraMagick.join(" ")} ${list} ${outputFilePath}`, (err, stdout, stderr) => {
       if (err) throw err
 
       res.download(outputFilePath, (err) => {
@@ -322,10 +323,9 @@ app.get('/make', csrfProtection, function (req, res) {
   res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 });
 
+// ~~~~~~~~~~ Not Working / Working PDF Route Above ~~~~~~~~~~
 // app.post('/upload', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
 app.post('/make', upload.array('files', 999), csrfProtection, asyncHandler(async (req, res) => {
-  console.log("---------------------------------");
-  console.log("---------------------------------");
   if (req.files) {
     req.files.forEach(file => {
       console.log(file);
@@ -333,10 +333,6 @@ app.post('/make', upload.array('files', 999), csrfProtection, asyncHandler(async
   } else {
     console.log("no files?!");
   }
-  console.log("---------------------------------");
-  console.log("---------------------------------");
-  
-  
   // res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 }));
 
