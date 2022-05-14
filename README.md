@@ -154,3 +154,18 @@ Use this project skeleton as a starting point for structuring your app. Things t
 * started following instructions at <https://devcenter.heroku.com/articles/custom-domains>
 * first ran --> $ heroku domains:add www.zine.garden
 * to see records to put into dreamhost had to run --> $ heroku domains
+
+
+## PDF Combiner
+
+* followed youtube walkthrough here
+  * https://www.youtube.com/watch?v=vZPk0wHdnSk
+* written instructions for walkthrough here
+  * https://codingshiksha.com/javascript/node-js-express-convert-png-jpg-images-to-single-pdf-file-web-app-using-imagemagick-library-deployed-to-heroku-2020/
+* repo for walkthrough here:
+  * https://github.com/gauti123456/imagestopdf/blob/master/index.js
+
+* integrated code, had to make two separate storage variables, one for aws and one for the pdf combiner
+* working locally but crashing with an H13 heroku error on deployment
+* went to settings in heroku project and went to "add build pack" and pasted the following
+  * https://github.com/DuckyTeam/heroku-buildpack-imagemagick.git
