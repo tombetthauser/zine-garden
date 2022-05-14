@@ -53,15 +53,62 @@ const singlePublicFileUpload = async (file) => {
   return result.Location;
 };
 
+// ~~~~~~~~~~~~~~~ Temporarily Commented Out for PDF Maker ~~~~~~~~~~~~~~~~
 const storage = multer.memoryStorage({
   destination: function (req, file, callback) {
     callback(null, "");
   },
 });
+// const pdfStorage = multer.diskStorage({
+//   destination: function (req, file, callback) {
+//     callback(null, "");
+//   },
+// });
 
 const singleMulterUpload = (nameOfKey) => multer({ storage: storage }).single(nameOfKey);
 const multipleMulterUpload = (nameOfKey) => multer({ storage: storage }).array(nameOfKey);
 
+
+
+// ~~~~~~~~~~ Make PDF Related ~~~~~~~~~~
+const fs = require('fs');
+const { exec } = require('child_process');
+const outputFilePath = Date.now() + "output.pdf"
+
+const pdfStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const imageFilter = function (req, file, cb) {
+  if (
+    file.mimetype == "image/png" ||
+    file.mimetype == "image/jpg" ||
+    file.mimetype == "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+    return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+  }
+};
+
+const upload = multer({ storage: pdfStorage, fileFilter: imageFilter });
+
+const dir = "public";
+const subDirectory = "public/uploads";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir);
+  fs.mkdirSync(subDirectory);
+}
 
 // ~~~~~~~~~~ Auth Helper Functions ~~~~~~~~~~
 // import access to the database
@@ -147,6 +194,7 @@ const restoreUser = async (req, res, next) => {
 const app = express();
 
 app.use(express.static(__dirname + '/'));
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extend: true }));
 app.engine('html', ejs.renderFile);
 app.set('view engine', 'html');
@@ -173,6 +221,11 @@ app.use((_req, res, next) => {
 // create Session table if it doesn't already exist
 // wouldn't be necessary if you created a migration for the session table
 store.sync();
+
+
+
+// ~~~~~~~~~~ Make PDF related setup ~~~~~~~~~~
+app.use(bodyParser.json());
 
 
 
@@ -225,6 +278,37 @@ const uploadValidators = [
 ];
 
 
+// ~~~~~~~~~~ Temp PDF maker route ~~~~~~~~~~
+app.post('/merge', upload.array('files', 100), (req, res) => {
+  list = ""
+  if (req.files) {
+    req.files.forEach(file => {
+      console.log(file.path)
+
+      list += `${file.path}`
+      list += " "
+    });
+
+    console.log(list)
+
+    exec(`magick convert ${list} ${outputFilePath}`, (err, stdout, stderr) => {
+      if (err) throw err
+
+      res.download(outputFilePath, (err) => {
+        if (err) throw err
+
+        // delete the files which is stored
+
+        req.files.forEach(file => {
+          fs.unlinkSync(file.path)
+        });
+
+        fs.unlinkSync(outputFilePath)
+      })
+    })
+  }
+})
+
 
 // ~~~~~~~~~~ Routes ~~~~~~~~~~
 app.get('/', csrfProtection, asyncHandler(async (req, res) => {
@@ -238,9 +322,23 @@ app.get('/make', csrfProtection, function (req, res) {
   res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 });
 
-app.post('/make', csrfProtection, function (req, res) {
-  res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
-});
+// app.post('/upload', singleMulterUpload("uploadFile"), csrfProtection, uploadValidators, asyncHandler(async (req, res) => {
+app.post('/make', upload.array('files', 999), csrfProtection, asyncHandler(async (req, res) => {
+  console.log("---------------------------------");
+  console.log("---------------------------------");
+  if (req.files) {
+    req.files.forEach(file => {
+      console.log(file);
+    })
+  } else {
+    console.log("no files?!");
+  }
+  console.log("---------------------------------");
+  console.log("---------------------------------");
+  
+  
+  // res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
+}));
 
 
 app.get('/upload', csrfProtection, function (req, res) {
@@ -338,6 +436,7 @@ app.post('/logout', (req, res) => {
     res.redirect('/');
   })
 });
+
 
 app.post('/delete', csrfProtection, asyncHandler(async (req, res) => {
   const { userId, zineId } = req.body;
