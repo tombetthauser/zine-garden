@@ -1,244 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Document</title>
-</head>
-<!-- <style>
-  body {
-    background-color: lightgray;
-    margin: 0 0 0 0;
-  }
-  div.header {
-    margin-bottom: 20px;
-    border-bottom: 0.5px solid black;
-    padding-bottom: 20px;
-    padding-left: 40px;
-    padding-top: 30px;
-  }
-  h1 {
-    font-weight: 100;
-    margin-bottom: 0;
-    /* margin-top: 0; */
-  }
-  form {
-    margin-left: 40px;
-    margin-bottom: 120px;
-    width: 400px;
-  }
-  div.spacer {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    width: 200px;
-    border-bottom: 0.5px solid #000;
-  }
-  p.note {
-    font-size: 12px;
-    margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-  }
-  ul.note-ul {
-    font-size: 12px;
-    margin-top: 3px;
-  }
-  strong {
-    text-decoration: underline;
-  }
-  ul.image-processing-ul {
-    font-size: 14px;
-    margin-top: 0;
-  }
-
-  h1 {
-    font-weight: 100;
-    margin-bottom: 0;
-  }
-
-  html {
-    background-color: lightgrey;
-    padding: 0 0 0 0;
-    /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
-    /* background-position: center; */
-  }
-
-  body {
-    background-size: contain;
-    width: 100%;
-    padding-top: 5px;
-    margin: 0 0 0 0;
-    /* color: yellow; */
-  }
-
-  .navbar {
-    width: 100%;
-    padding-left: 40px;
-    border-bottom: .5px solid black;
-    margin-bottom: 20px;
-  }
-
-  .buttons {
-    margin-left: 25px;
-  }
-
-  .buttons button {
-    margin-left: 10px;
-  }
-
-  p {
-    margin-top: 5px;
-  }
-
-  .info-span {
-    font-size: 13px;
-  }
-
-  ul.zine-links {
-    margin-left: 20px;
-  }
-
-  div.login-div {
-    font-size: 12px;
-    padding-top: 7.5px;
-    margin-top: 0;
-    margin-bottom: 15px;
-    border-top: 0.5px solid #000;
-    width: 300px;
-  }
-
-  div.login-div a {
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-
-  p.welcome-message {
-    font-size: 13px;
-    width: 400px;
-    margin-left: 35px;
-    margin-top: 20px;
-    line-height: 16px;
-  }
-
-  input.submit {
-    display: block;
-    margin-top: 30px;
-  }
-
-  /* label {
-    display: block;
-    margin-top: 15px;
-  } */
-
-  form {
-    margin-top: 30px;
-    margin-left: 40px;
-    border: 0.5px solid #000;
-    width: 400px;
-    padding: 35px 45px 50px 45px;
-    border-radius: 5px;
-    background-color: rgb(225, 225, 225);
-  }
-  summary {
-    font-size: 14px;
-  }
-  .title-gif {
-    display: inline-block;
-    width: 70px;
-    margin-bottom: -10px;
-    margin-left: -7px;
-  }
-  .no-underline {
-    text-decoration: none;
-    color: #000;
-  }
-  button {
-    background-color: rgb(230, 230, 230);
-    border: 1px solid gray;
-    padding: 2px 8px 3px 8px;
-    border-radius: 4px;
-    color: black;
-  }
-</style> -->
-<body>
-  <div class="navbar">
-    <a href="/" class="no-underline">
-      <h1>
-        Make a Zine
-        <!-- 🌷 -->
-        <img class="title-gif"
-          src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
-        <!-- https://gifimage.net/gif-tree-8/ -->
-      </h1>
-      <p>Create a printable Zine PDF from images!</p>
-    </a>
-    <div class="login-div">
-      already have a zine pdf? -->
-      <a href="/upload">upload zine</a> > 
-      <a href="/">back to zines</a>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zine Garden</title>
+  </head>
+  <body>
+    <div class="navbar">
+      <a href="/" class="no-underline">
+        <h1>
+          Zine Garden
+          <img class="title-gif" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
+        </h1>
+        <p>Create a printable Zine PDF from images!</p>
+      </a>
+      <div class="login-div">
+        already have a file? -->
+        <a href="/upload">upload zine</a> > 
+        <a href="/">back to zines</a>
+      </div>
     </div>
-  </div>
+    <br>
+    <form action="/make" method="post" enctype="multipart/form-data">
+      <div>
+        <label>Select zine page images:</label>
+        <input type="file" multiple/>
+      </div>
 
-  <form action="" onSubmit="alert('Make a Zine functionality coming soon!')">
-    <label>Upload Images:</label>
-    <input type="file" multiple/>
-    <p class="note">
-      <strong>Note:</strong> If possible page counts should conform to the following. Otherwise blank pages will be printed and must be removed.
-      Page count should always be even. Odd page count zines will have blank pages that will not be removable.
-    </p>
+      <!-- <p class="note">
+        <strong>Note:</strong> If possible page counts should conform to the following. Otherwise blank pages will be printed and must be removed.
+        Page count should always be even. Odd page count zines will have blank pages that will not be removable.
+      </p>
       <ul class="note-ul">
         <li>quarter page zines: multiples of 8 (8, 16, 24 etc)</li>
         <li>half page zines: multiples of 4 (4, 8, 12 etc)</li>
         <li>full / double / triple / quadrouple page zines: multiples of 2 (2, 4, 6 etc)</li>
-      </ul>
-    <div class="spacer"></div>
-    
-    <label>Zine Size:</label>
-    <select name="print-size" id="print-size">
-      <option value="quarter">4.25 x 5.5 inches (quarter)</option>
-      <option value="half">5.5 x 8.5 inches (half)</option>
-      <option value="full">8.5 x 11 inches (full)</option>
-      <option value="double">17 x 22 inches (double)</option>
-      <option value="triple">25.5 x 33 inches (triple)</option>
-      <option value="quadruple">34 x 44 inches (quadruple)</option>
-    </select>
-    <div class="spacer"></div>
+      </ul> -->
+      
+      <!-- <label>Zine Size:</label>
+      <select name="print-size" id="print-size">
+        <option value="quarter">4.25 x 5.5 inches (quarter)</option>
+        <option value="half">5.5 x 8.5 inches (half)</option>
+        <option value="full">8.5 x 11 inches (full)</option>
+        <option value="double">17 x 22 inches (double)</option>
+        <option value="triple">25.5 x 33 inches (triple)</option>
+        <option value="quadruple">34 x 44 inches (quadruple)</option>
+      </select> -->
 
-    <label>Print Orientation:</label>
-    <select name="print-orientation" id="print-orientation">
-      <option value="horizontal">horizontal (landscape)</option>
-      <option value="vertical">vertical (portrait)</option>
-    </select>
-    <div class="spacer"></div>
+      <!-- <label>Print Orientation:</label>
+      <select name="print-orientation" id="print-orientation">
+        <option value="horizontal">horizontal (landscape)</option>
+        <option value="vertical">vertical (portrait)</option>
+      </select> -->
 
-    <details>
-      <summary>more options...</summary>
-      <div class="spacer"></div>
-      <label>Image Cropping:</label>
+      <!-- <label>Image Cropping:</label>
       <select name="print-size" id="print-size">
         <option value="crop-images">crop images</option>
         <option value="contain-image">contain images</option>
       </select>
-        <p class="note"><strong>Note:</strong> Cropping is minimal to fit on print pages and is recommended, contain will create white space.</p>
-      <div class="spacer"></div>
+      <p class="note"><strong>Note:</strong> Cropping is minimal to fit on print pages and is recommended, contain will create white space.</p> -->
             
-      <label>Print Zine Assembly Instructions?</label>
+      <!-- <label>Print Zine Assembly Instructions?</label>
       <input type="checkbox" checked>
-      <p class="note"><strong>Note:</strong> You can view all zine assembly instructions for all sizes <a href="/instructions">here</a></p>
-      <div class="spacer"></div>
+      <p class="note"><strong>Note:</strong> You can view all zine assembly instructions for all sizes <a href="/instructions">here</a></p> -->
       
-      <label>Leave Interior Blank Edge for Binding?</label>
+      <!-- <label>Leave Interior Blank Edge for Binding?</label>
       <input type="checkbox" checked>
-      <p class="note"><strong>Note:</strong> Primarily for external staple or stitch binding. Not necessary if using saddle stapler.</p>
-      <div class="spacer"></div>
+      <p class="note"><strong>Note:</strong> Primarily for external staple or stitch binding. Not necessary if using saddle stapler.</p> -->
       
-      <label>Leave Cover Blank Edge for Binding?</label>
+      <!-- <label>Leave Cover Blank Edge for Binding?</label>
       <input type="checkbox">
-      <p class="note"><strong>Note:</strong> Totally optional for external staple or stitch binding. Not necessary though.</p>
-      <div class="spacer"></div>
+      <p class="note"><strong>Note:</strong> Totally optional for external staple or stitch binding. Not necessary though.</p> -->
       
-      <label>Added Page Numbers:</label>
+      <!-- <label>Added Page Numbers:</label>
       <select>
           <option value="none">no page numbers</option>
           <option value="top-right">top right</option>
@@ -246,10 +78,9 @@
           <option value="bottom-right">bottom right</option>
           <option value="bottom-center">bottom center</option>
         </select>
-      </select>
-      <div class="spacer"></div>
-  
-      <label>Image Processing:</label>
+      </select> -->
+
+      <!-- <label>Image Processing:</label>
       <p class="note"><strong>Note:</strong> These are all optional and can be chained together. They will be applied in order.</p>
       <ul class="image-processing-ul">
           <li>monochrome:<input type="checkbox"></li>
@@ -258,18 +89,15 @@
           <li>dither:<input type="checkbox"></li>
           <li>invert:<input type="checkbox"></li>
         </ul>
-      </select>
-      <div class="spacer"></div>
+      </select> -->
       
-      <label>Zinebot Mode?</label>
+      <!-- <label>Zinebot Mode?</label>
       <input type="checkbox">
       pages: 
-      <input type="number" min="0">
-    </details>
-    
-    
-    <div class="spacer"></div>
-    <input type="submit" value="Make Zine PDF!">
-  </form>
-</body>
+      <input type="number" min="0"> -->
+
+      <br>
+      <input type="submit" value="Make Zine PDF!">
+    </form>
+  </body>
 </html>

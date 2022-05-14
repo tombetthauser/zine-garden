@@ -1,149 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Document</title>
+  <title>Zine Garden</title>
 </head>
-<!-- <style>
-  h1 {
-      font-weight: 100;
-      margin-bottom: 0;
-  }
-
-  html {
-      background-color: lightgrey;
-      padding: 0 0 0 0;
-      /* background-image: url('https://images.unsplash.com/photo-1534710961216-75c88202f43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80'); */
-      /* background-position: center; */
-      min-height: 100vw;
-    }
-    
-    body {
-      background-size: contain;
-      width: 100%;
-      padding-top: 5px;
-      margin: 0 0 0 0;
-      min-height: 100vw;
-      /* color: yellow; */
-  }
-
-  .navbar {
-      width: 100%;
-      padding-left: 40px;
-      border-bottom: .5px solid black;
-      margin-bottom: 20px;
-  }
-
-  .buttons {
-      margin-left: 25px;
-  }
-
-  .buttons button {
-      margin-left: 10px;
-  }
-
-  p {
-      margin-top: 5px;
-  }
-
-  .info-span {
-    font-size: 13px;
-  }
-  ul.zine-links {
-    margin-left: 20px;
-  }
-  div.auth-div {
-    font-size: 12px;
-    padding-top: 7.5px;
-    margin-top: 0;
-    margin-bottom: 15px;
-    border-top: 0.5px solid #000;
-    width: 350px;
-  }
-  div.auth-div a {
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  p.welcome-message {
-    font-size: 13px;
-    width: 400px;
-    margin-left: 35px;
-    margin-top: 20px;
-    line-height: 16px;
-  }
-  .random-zine {
-    margin-left: 45px;
-    font-size: 11px;
-    cursor: pointer;
-  }
-  /* * {
-    text-shadow: 0px 0px 2px #000;
-    font-family: monospace;
-    font-weight: 500;
-    background-color: lightgray;
-    filter: saturate(0) contrast(20) invert(1);
-  } */
-  form.logout {
-    display: inline;
-  }
-  input.logout-submit {
-    border: none;
-    background-color: #0000;
-    display: inline;
-    font-family: serif;
-    color: blue;
-    font-size: 12px;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  a button {
-    cursor: pointer;
-  }
-  .title-gif {
-    display: inline-block;
-    width: 70px;
-    margin-bottom: -10px;
-    margin-left: -7px;
-  }
-  .no-underline {
-    text-decoration: none;
-    color: #000;
-  }
-  .delete-form {
-    display: inline-block;
-  }
-  .delete-button {
-    display: inline-block;
-    cursor: pointer;
-    font-size: 10px;
-  }
-  .delete-button:hover {
-    background-color: darkred;
-    border-color: darkred;
-    color: white;
-    /* border: 1px solid gray; */
-    border-radius: 3px;
-  }
-  button {
-    background-color: rgb(230, 230, 230);
-    border: 1px solid gray;
-    padding: 2px 8px 3px 8px;
-    border-radius: 4px;
-    color: black;
-  }
-</style> -->
 <body>
-  <div class="navbar">
-    <a href="/" class="no-underline">
+  <div>
+    <a href="#" onClick="alert('hi there!')">
       <h1>
         Zine Garden
-        <img class="title-gif" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
       </h1>
       <p>Welcome to the party!</p>
     </a>
-    <div class="auth-div">
+    <div>
       <% if (!locals.user) { %>
         currently not logged in --> 
         <a href="/signup">sign up</a> > 
@@ -151,45 +20,48 @@
       <% } else { %>
           currently logged in as --> 
           <a href='/?user=<%= locals.user.username %>''><%= locals.user.username %></a> > 
-          <form class="logout" action="/logout" method="post" style="display:inline;">
-              <input class="logout-submit" type="submit" value="log out">
+          <form action="/logout" method="post" style="display:inline;">
+              <input type="submit" value="log out" style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
           </form>
       <% } %>
     </div>
   </div>
-
   <br>
-  
-  <div class="buttons">
-    <a href="/upload"><button>upload a zine pdf!</button></a>
-    <a href="/make"><button>make a zine pdf!</button></a>
+  <div>
+    <a href="/upload"><button style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
+      upload a zine pdf!
+    </button></a>
+    <a href="/make"><button style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
+      make a zine pdf!
+    </button></a>
   </div>
-
-  <p class="welcome-message">
-    Check out the zines! Free to download and print. Should be printable on home printers and bindable with at-home stuff like a stapler. But who knows?
+  <p>
+    Check out the zines! Free to download and print. Should be printable on home printer and bindable with at-home stuff like staplers. But who knows?
   </p>
-
-  <ul class="zine-links">
+  <p>
+    <%= queryText %>
+  </p>
+  <ul>
     <% for (let i = 0; i < allZines.length; i++) { %>
       <li>
         <a target="new" href=<%= allZines[i].url %>><%= allZines[i].title %></a>
-        <span class="info-span">
+        <span>
           <%= ` --> ` + allZines[i].productionCity + " (" + allZines[i].productionDate.getFullYear() + `)`%>
         </span>
         <% if (locals.user) { %>
           <% if (locals.user.username === "tom" || parseInt(allZines[i].userId) === parseInt(locals.user.id)) { %>
-            <form class="delete-form" action="/delete" method="post" style="display:inline;">
+            <form action="/delete" method="post" style="display:inline;">
               <input type="hidden" name="_csrf" value=<%=csrfToken %>>
               <input type="hidden" name="userId" value=<%=locals.user.id %>>
               <input type="hidden" name="zineId" value=<%=allZines[i].id %>>
-              <input class="delete-button" type="submit" value="delete" onclick="return confirm('Are you sure you want to delete this zine? This action cannot be undone.')">
+              <input type="submit" value="delete" onclick="return confirm('Are you sure you want to delete this zine? This action cannot be undone.')" style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
             </form>
           <% } %>
         <% } %>
       </li>
     <% } %>
     <li>
-      <a target="new" href="/random">download random zine!</a><span class="info-span"></span>
+      <a target="new" href="/random">download a random zine</a>
     </li>
   </ul>
 </body>

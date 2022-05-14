@@ -154,7 +154,7 @@ app.set('views', __dirname);
 
 
 
-// ~~~~~~~~~~ Auth Related ~~~~~~~~~~
+// ~~~~~~~~~~ Auth Related Setup ~~~~~~~~~~
 app.use(express.json()); // <-- ? in AWS setup also
 app.use(cookieParser(sessionSecret)); // <-- ?
 app.use(session({
@@ -230,11 +230,15 @@ const uploadValidators = [
 app.get('/', csrfProtection, asyncHandler(async (req, res) => {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"foo":"bar"});
   const zines = await db.Zine.findAll()
-  res.render(__dirname + '/views/index.html', { allZines: zines, csrfToken: req.csrfToken() });
+  res.render(__dirname + '/views/index.html', { allZines: zines, csrfToken: req.csrfToken(), queryText: "all the zines..."});
 }));
 
 
 app.get('/make', csrfProtection, function (req, res) {
+  res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
+});
+
+app.post('/make', csrfProtection, function (req, res) {
   res.render(__dirname + '/views/make.html', { user: { username: "" }, errors: [], csrfToken: req.csrfToken() });
 });
 
