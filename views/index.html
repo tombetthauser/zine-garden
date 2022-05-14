@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=0.7">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Document</title>
 </head>
-<style>
+<!-- <style>
   h1 {
       font-weight: 100;
       margin-bottom: 0;
@@ -133,32 +133,32 @@
     border-radius: 4px;
     color: black;
   }
-</style>
+</style> -->
 <body>
   <div class="navbar">
     <a href="/" class="no-underline">
       <h1>
         Zine Garden
-        <!-- 🌷 -->
         <img class="title-gif" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
-        <!-- https://gifimage.net/gif-tree-8/ -->
       </h1>
       <p>Welcome to the party!</p>
     </a>
     <div class="auth-div">
       <% if (!locals.user) { %>
-        you are currently not logged in --> 
+        currently not logged in --> 
         <a href="/signup">sign up</a> > 
         <a href="/login">log in</a>
       <% } else { %>
-          you are currently logged in as --> 
+          currently logged in as --> 
           <a href='/?user=<%= locals.user.username %>''><%= locals.user.username %></a> > 
-          <form class="logout" action="/logout" method="post">
+          <form class="logout" action="/logout" method="post" style="display:inline;">
               <input class="logout-submit" type="submit" value="log out">
           </form>
       <% } %>
     </div>
   </div>
+
+  <br>
   
   <div class="buttons">
     <a href="/upload"><button>upload a zine pdf!</button></a>
@@ -166,7 +166,7 @@
   </div>
 
   <p class="welcome-message">
-    All zines free to download and print. No log in required. Print files are ready for standard home printers using 8.5 x 11 inch paper and include simple assembly / binding instructions.
+    Check out the zines! Free to download and print. Should be printable on home printers and bindable with at-home stuff like a stapler. But who knows?
   </p>
 
   <ul class="zine-links">
@@ -178,7 +178,7 @@
         </span>
         <% if (locals.user) { %>
           <% if (locals.user.username === "tom" || parseInt(allZines[i].userId) === parseInt(locals.user.id)) { %>
-            <form class="delete-form" action="/delete" method="post">
+            <form class="delete-form" action="/delete" method="post" style="display:inline;">
               <input type="hidden" name="_csrf" value=<%=csrfToken %>>
               <input type="hidden" name="userId" value=<%=locals.user.id %>>
               <input type="hidden" name="zineId" value=<%=allZines[i].id %>>
@@ -189,7 +189,7 @@
       </li>
     <% } %>
     <li>
-      <a href="#" onClick="alert('coming soon!')">download random zine!</a><span class="info-span"> --> (???)</span>
+      <a target="new" href="/random">download random zine!</a><span class="info-span"></span>
     </li>
   </ul>
 </body>
