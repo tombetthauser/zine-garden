@@ -292,7 +292,7 @@ app.post('/merge', upload.array('files', 100), (req, res) => {
 
     console.log(list)
 
-    exec(`magick convert -monochrome ${list} ${outputFilePath}`, (err, stdout, stderr) => {
+    exec(`magick convert -resize 1150x850 -monochrome ${list} ${outputFilePath}`, (err, stdout, stderr) => {
       if (err) throw err
 
       res.download(outputFilePath, (err) => {
