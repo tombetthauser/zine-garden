@@ -280,7 +280,7 @@ const uploadValidators = [
 
 // ~~~~~~~~~~ Temp PDF maker route ~~~~~~~~~~
 app.post('/merge', upload.array('files', 100), (req, res) => {
-  let extraMagick = ["-monochrome"];
+  let extraMagick = ["-monochrome -gravity center -crop 2:3"];
   list = ""
   if (req.files) {
     req.files.forEach(file => {
@@ -292,7 +292,7 @@ app.post('/merge', upload.array('files', 100), (req, res) => {
 
     console.log(list)
 
-    exec(`magick convert ${extraMagick.join(" ")} ${list} ${outputFilePath}`, (err, stdout, stderr) => {
+    exec(`magick convert -monochrome ${list} ${outputFilePath}`, (err, stdout, stderr) => {
       if (err) throw err
 
       res.download(outputFilePath, (err) => {
