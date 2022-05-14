@@ -10,7 +10,7 @@
         Zine Garden
         <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F11%2Fgif-tree-8.gif&f=1&nofb=1">
       </h1>
-      <p>Welcome to the party!</p>
+      <p>An open archive of printable zines!</p>
     </a>
     <div>
       <% if (!locals.user) { %>
@@ -29,7 +29,7 @@
   <br>
   <div>
     <a href="/upload"><button style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
-      upload a zine pdf!
+      upload a zine!
     </button></a>
     <a href="/make"><button style="color:#000;background-color:#eee;border:1px solid gray;border-radius:5px;cursor:pointer;padding: 2px 8px 3px 8px;">
       make a zine pdf!
@@ -38,9 +38,7 @@
   <p>
     Check out the zines! Free to download and print. Should be printable on home printer and bindable with at-home stuff like staplers. But who knows?
   </p>
-  <p>
-    <%= queryText %>
-  </p>
+  <h3>Zine Downloads...</h3>
   <ul>
     <% for (let i = 0; i < allZines.length; i++) { %>
       <li>

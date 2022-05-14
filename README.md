@@ -169,3 +169,10 @@ Use this project skeleton as a starting point for structuring your app. Things t
 * working locally but crashing with an H13 heroku error on deployment
 * went to settings in heroku project and went to "add build pack" and pasted the following
   * https://github.com/DuckyTeam/heroku-buildpack-imagemagick.git
+
+* redeployed app with $ git push heroku main
+* still working fine locally but crashing with a Heroku --tail message [H14 / 503] on the deployed version
+* checked free dyno hours with:
+  * $ heroku ps -a app-name
+* still had 500 free hours remaining
+* stack overflow thread indicated 
