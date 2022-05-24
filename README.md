@@ -183,3 +183,8 @@ Use this project skeleton as a starting point for structuring your app. Things t
   * then made a trivial text change and ran $ git push heroku main
 
 * Now it works!
+
+
+## Adding More Complex Bash Script Files
+
+* $ heroku run bash
