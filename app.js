@@ -319,19 +319,20 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
   // ].forEach(command => {
   //   exec(command);
   // })
-  exec("sh ./public/bashscripts/test.sh");
+  exec("sh ./public/bashscripts/test.sh").then(() => {
+    res.download("./public/output/zine.pdf", (err) => {
+      if (err) throw err
+      // delete the files which is stored
+  
+      req.files.forEach(file => {
+        fs.unlinkSync(file.path)
+      });
+  
+      fs.unlinkSync(outputFilePath)
+    })
+  });
   // res.redirect("/#success?")
 
-  res.download("./public/output/zine.pdf", (err) => {
-    if (err) throw err
-    // delete the files which is stored
-
-    req.files.forEach(file => {
-      fs.unlinkSync(file.path)
-    });
-
-    fs.unlinkSync(outputFilePath)
-  })
 })
 
 

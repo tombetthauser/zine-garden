@@ -1,5 +1,8 @@
 # ~~~~~~~~~~ GENERAL SETUP ~~~~~~~~~~~~~~~~~~~~
 
+# log failures / actions in the shell
+set -x
+
 # first we delete and recreate our zine images directory
 # we copy all of our original input images into this directory to manipulate
 rm -rf zine-images
@@ -11,7 +14,7 @@ mkdir zine-pages
 
 # then we capture all the filenames in an array
 # we grab the length for reference also since thats a pain in bash
-zineImageFileNames=(./zine-images/*)
+zineImageFileNames=(./zine-images/* )
 zineImageCount=${#zineImageFileNames[@]}
 
 # now we set the max number of images per page
@@ -223,7 +226,7 @@ done
 
 # ~~~~~~~~~~ COMBINE INTO SINGLE PDF ~~~~~~~~~~~~~~~~~~~~
 currentTime=`date -u +%s`
-rm ./public/output/zine.pdf
+# rm ./public/output/zine.pdf
 magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
 # open zine-${currentTime}.pdf
