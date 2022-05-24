@@ -311,6 +311,30 @@ app.post('/merge', upload.array('files', 100), (req, res) => {
 })
 
 
+// ~~~~~~~~~~ Half-Page Portrait Side-Stapled Zine ~~~~~~~~~~
+app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res) => {
+  // [
+  //   "rm ./public/pages/*",
+  //   "for ((i=0; i<10; i++)); do \ touch ./public/pages/test-$((i)).txt \ done",
+  // ].forEach(command => {
+  //   exec(command);
+  // })
+  exec("sh ./public/bashscripts/test.sh");
+  // res.redirect("/#success?")
+
+  res.download("./public/output/zine.pdf", (err) => {
+    if (err) throw err
+    // delete the files which is stored
+
+    req.files.forEach(file => {
+      fs.unlinkSync(file.path)
+    });
+
+    fs.unlinkSync(outputFilePath)
+  })
+})
+
+
 // ~~~~~~~~~~ Routes ~~~~~~~~~~
 app.get('/', csrfProtection, asyncHandler(async (req, res) => {
   // res.sendFile(path.join(__dirname, '/views/test.html'), {"foo":"bar"});
