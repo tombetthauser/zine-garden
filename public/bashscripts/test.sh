@@ -223,6 +223,7 @@ done
 
 # ~~~~~~~~~~ COMBINE INTO SINGLE PDF ~~~~~~~~~~~~~~~~~~~~
 currentTime=`date -u +%s`
+rm ./public/output/zine.pdf
 magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
 # open zine-${currentTime}.pdf
