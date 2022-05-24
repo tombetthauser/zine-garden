@@ -6,15 +6,17 @@ set -x
 # first we delete and recreate our zine images directory
 # we copy all of our original input images into this directory to manipulate
 rm -rf zine-images
-cp -r ./public/uploads zine-images
+rm -rf ./public/zine-images
+cp -r ./public/uploads ./public/zine-images
 
 # also delete the zine pages folder if it exists and remake it empty
 rm -rf zine-pages
-mkdir zine-pages
+rm -rf ./public/zine-pages
+mkdir ./public/zine-pages
 
 # then we capture all the filenames in an array
 # we grab the length for reference also since thats a pain in bash
-zineImageFileNames=(./zine-images/* )
+zineImageFileNames=(./public/zine-images/*)
 zineImageCount=${#zineImageFileNames[@]}
 
 # now we set the max number of images per page
@@ -57,12 +59,12 @@ yPageSizePixels=1100
 # this approach makes blank pages first to overlay the images onto later
 # making the blank page files doesn't need to happen first but might as well
 # first it makes a single starter blank page to copy which speed things up
-convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white zine-pages/1-page.png
+convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white ./public/zine-pages/1-page.png
 
 # then it makes all blank pages in new directory
 # this is just faster than making each page with convert
 for ((i=1; i<${pagesNeeded}; i++)); do
-  cp zine-pages/1-page.png zine-pages/$(($i+1))-page.png
+  cp ./public/zine-pages/1-page.png ./public/zine-pages/$(($i+1))-page.png
 done
 
 
@@ -138,8 +140,8 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   
   # use some horrible bash syntax to separate the filetype for renaming
   extension="${zineImage##*.}"
-  newFileName=./zine-images/$((absoluteOrder))-ordered.$extension
-  mv $zineImage ./zine-images/$((absoluteOrder))-ordered.$extension
+  newFileName=./public/zine-images/$((absoluteOrder))-ordered.$extension
+  mv $zineImage ./public/zine-images/$((absoluteOrder))-ordered.$extension
 done
 
 
@@ -179,7 +181,7 @@ done
 # ~~~~~~~~~~ ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
 
 # recollect new image names
-zineImageFileNames=(./zine-images/*)
+zineImageFileNames=(./public/zine-images/*)
 
 # place all zine images on pages in new order alternating positions
 for ((i=0; i<$((zineImageCount)); i++)); do
@@ -188,7 +190,7 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
   pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
 
-  magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./zine-pages/$((pageNumber))-page.png ./zine-pages/$((pageNumber))-page.png
+  magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
 done
 
 
@@ -197,7 +199,7 @@ done
 # ~~~~~~~~~~ STYLE PAGES ~~~~~~~~~~~~~~~~~~~~
 
 # collect page file names and length then iterate through
-pageFileNames=(./zine-pages/*)
+pageFileNames=(./public/zine-pages/*)
 pageFileCount=${#pageFileNames[@]}
 
 for ((i=0; i<$((pageFileCount)); i++)); do
@@ -218,7 +220,7 @@ for ((i=0; i<$((pageFileCount)); i++)); do
   pageFileName=${pageFileNames[$((i))]}
 
   convert $pageFileName -filter point -resize 1700x2200 $pageFileName
-  magick $pageFileName ./zine-pages/$((i))-page.jpg
+  magick $pageFileName ./public/zine-pages/$((i))-page.jpg
   rm $pageFileName
 done
 
