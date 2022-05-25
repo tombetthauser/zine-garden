@@ -320,10 +320,11 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
   //   exec(command);
   // })
   if (req.files) {
-    exec(`bash ./public/bashscripts/test.sh`, (err, stdout, stderr) => {
+    // exec(`bash ./public/bashscripts/test.sh`, (err, stdout, stderr) => {
+    exec(`bash ./public/bashscripts/test2.sh`, (err, stdout, stderr) => {
       if (err) throw err
   
-      res.download("./public/output/zine.pdf", (err) => {
+      res.download("./public/output/test2.pdf", (err) => {
         if (err) throw err
   
         // delete the files which is stored
@@ -332,7 +333,8 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
           fs.unlinkSync(file.path)
         });
   
-        fs.unlinkSync("./public/output/zine.pdf")
+        // fs.unlinkSync("./public/output/zine.pdf")
+        fs.unlinkSync("./public/output/test2.pdf")
       })
     })
   }
