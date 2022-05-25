@@ -14,6 +14,9 @@ rm -rf zine-pages
 rm -rf ./public/zine-pages
 mkdir ./public/zine-pages
 
+rm -rf ./public/output
+mkdir ./public/output
+
 # then we capture all the filenames in an array
 # we grab the length for reference also since thats a pain in bash
 zineImageFileNames=(./public/zine-images/*)
