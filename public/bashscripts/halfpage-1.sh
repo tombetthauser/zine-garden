@@ -44,11 +44,11 @@ pagesNeeded=$(((zineImageCount / pageMax)+((zineImageCount % pageMax > 0 ) * 2))
 # xPageSizePixels=1700
 # yPageSizePixels=2200
 
-xPageSizePixels=850
-yPageSizePixels=1100
+# xPageSizePixels=850
+# yPageSizePixels=1100
 
-# xPageSizePixels=425
-# yPageSizePixels=550
+xPageSizePixels=425
+yPageSizePixels=550
 
 # xPageSizePixels=217
 # yPageSizePixels=275
@@ -64,19 +64,19 @@ yPageSizePixels=1100
 
 # convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white /app/public/zine-pages/1-page.png
 convert -size ${xPageSizePixels}x${yPageSizePixels} xc:lime /app/public/zine-pages/1-page.png
+# convert /app/public/zine-pages/1-page.png -colorspace sRGB -fuzz 1% -fill white -opaque lime /app/public/zine-pages/1-page.png
 
 
 # then it makes all blank pages in new directory
 # this is just faster than making each page with convert
 for ((i=1; i<${pagesNeeded}; i++)); do
   cp /app/public/zine-pages/1-page.png /app/public/zine-pages/$(($i+1))-page.png
-  
 done
 
 
 
 
-# ~~~~~~~~~~ RESIZE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~ RESIZE AND STYLE INDIVIDUAL IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
 # this determines the desired individual image size 
 # this will allow us so simply place it on the page files by coordinate
 # these could be calculated dynamically but can be determined manually
@@ -99,6 +99,9 @@ xImageSizePixels=$(((yImagePercent * yPageSizePixels) / 10000))
 for ((i=0; i<$((zineImageCount)); i++)); do
   zineImage=${zineImageFileNames[$((i))]}
   convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
+
+  convert $zineImage -colorspace gray -ordered-dither o2x2 $zineImage # <--- black and white dither
+  convert $zineImage -colorspace RGB -fuzz 15% -fill red -opaque black $zineImage # <--- replace black with red
 done
 
 
@@ -246,13 +249,14 @@ for ((i=0; i<$((pageFileCount)); i++)); do
   # convert $pageFileName -colorspace gray -edge 1 -fuzz 1% -trim +repage $pageFileName
   # magick $pageFileName -colorspace gray -color-threshold 'gray(46.4152%)-gray(55.3278%)' $pageFileName
   # convert $pageFileName -negate $pageFileName
-  convert $pageFileName -ordered-dither o2x2 $pageFileName # <--- color dither
+  # convert $pageFileName -ordered-dither o2x2 $pageFileName # <--- color dither
   # convert $pageFileName -colorspace gray -ordered-dither o2x2 $pageFileName # <--- black and white dither
   # convert $pageFileName -colorspace RGB -fuzz 15% -fill red -opaque black $pageFileName
   # convert $pageFileName -colorspace RGB -fuzz 15% -fill blue -opaque black $pageFileName
   
   # get rid of lime placeholder color
-  convert $pageFileName -colorspace RGB -fuzz 1% -fill white -opaque lime $pageFileName
+  # convert $pageFileName -colorspace RGB -fuzz 1% -fill white -opaque lime $pageFileName
+  convert $pageFileName -colorspace sRGB -fuzz 1% -fill white -opaque lime $pageFileName
 done
 
 
