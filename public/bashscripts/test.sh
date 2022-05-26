@@ -73,6 +73,15 @@ done
 
 
 
+# ~~~~~~~~~~ RESIZE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
+for ((i=0; i<$((zineImageCount)); i++)); do
+  zineImage=${zineImageFileNames[$((i))]}
+  convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
+done
+
+
+
+
 # ~~~~~~~~~~ ROTATE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
 
 # this uses a rotation pattern array with numbers representing clockwise degrees
