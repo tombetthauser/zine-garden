@@ -73,7 +73,27 @@ done
 
 
 
-# ~~~~~~~~~~ RESIZE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~ ROTATE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
+
+# this uses a rotation pattern array with numbers representing clockwise degrees
+# it can be referenced dynamically for any page number with some modulus arithmatic
+# the pattern here is tricky since it needs to be applied before reordering the images for page placement
+# this is best calculated manually with a physical mock-up of the zine size
+
+rotations=(270 90 90 270) # <--- set these manually for different zine layouts
+rotationsLength=${#rotations[@]}
+
+for ((i=0; i<$((zineImageCount)); i++)); do
+  rotation=${rotations[$((i % rotationsLength))]}
+  zineImage=${zineImageFileNames[$((i))]}
+  convert $zineImage -rotate $rotation $zineImage
+done
+
+
+
+
+# ~~~~~~~~~~ CALCULATE IMAGE POSITION COORDINATES ~~~~~~~~~~~~~~~~~~~~
+
 # this determines the desired individual image size 
 # this will allow us so simply place it on the page files by coordinate
 # these could be calculated dynamically but can be determined manually
@@ -97,54 +117,6 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   zineImage=${zineImageFileNames[$((i))]}
   convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
 done
-
-
-
-
-# ~~~~~~~~~~ ROTATE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
-
-# this uses a rotation pattern array with numbers representing clockwise degrees
-# it can be referenced dynamically for any page number with some modulus arithmatic
-# the pattern here is tricky since it needs to be applied before reordering the images for page placement
-# this is best calculated manually with a physical mock-up of the zine size
-
-rotations=(270 90 90 270) # <--- set these manually for different zine layouts
-rotationsLength=${#rotations[@]}
-
-for ((i=0; i<$((zineImageCount)); i++)); do
-  rotation=${rotations[$((i % rotationsLength))]}
-  zineImage=${zineImageFileNames[$((i))]}
-  convert $zineImage -rotate $rotation $zineImage
-done
-
-
-
-
-# # ~~~~~~~~~~  RESIZE IMAGE FILES ~~~~~~~~~~~~~~~~~~~~
-
-# # this determines the desired individual image size 
-# # this will allow us so simply place it on the page files by coordinate
-# # these could be calculated dynamically but can be determined manually
-# # its easier to do with a physical mockup
-# # percentages were determined by measuring in 1/8th inch units
-# # could also have been done with millimeters
-# # image sizes are percentages of total page height / width accounting for 1/8th inch border gaps
-# # the border gaps are to match the 1/8th inch unprited white boarder on most home printers
-
-# xImagePercent=9706 # represents 97.06% <-- set this manually for different zine layouts
-# yImagePercent=4773 # represents 47.73% <-- set this manually for different zine layouts
-
-# # calculate percentages into pixels
-# xImageSizePixels=$(((xImagePercent * xPageSizePixels) / 10000)) # <-- division simulates percentage
-# yImageSizePixels=$(((yImagePercent * yPageSizePixels) / 10000))
-# # note that bash only uses integers so perform calculation manually before running script
-
-# # this resizes all images in place
-# # this has to happen after rotation right now but should be changed for efficiency later
-# for ((i=0; i<$((zineImageCount)); i++)); do
-#   zineImage=${zineImageFileNames[$((i))]}
-#   convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
-# done
 
 
 
