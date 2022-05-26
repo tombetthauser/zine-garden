@@ -1,3 +1,4 @@
 set -x
 
-touch ./public/output/test2.pdf
+echo "input arg $1"
+echo $1

@@ -5,12 +5,11 @@ set -x
 
 # first we delete and recreate our zine images directory
 # we copy all of our original input images into this directory to manipulate
-rm -rf zine-images
+rm /app/public/uploads/dummy-file.txt
 rm -rf /app/public/zine-images
 cp -r /app/public/uploads /app/public/zine-images
 
 # also delete the zine pages folder if it exists and remake it empty
-rm -rf zine-pages
 rm -rf /app/public/zine-pages
 mkdir /app/public/zine-pages
 
@@ -62,12 +61,16 @@ yPageSizePixels=1100
 # this approach makes blank pages first to overlay the images onto later
 # making the blank page files doesn't need to happen first but might as well
 # first it makes a single starter blank page to copy which speed things up
-convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white /app/public/zine-pages/1-page.png
+
+# convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white /app/public/zine-pages/1-page.png
+convert -size ${xPageSizePixels}x${yPageSizePixels} xc:lime /app/public/zine-pages/1-page.png
+
 
 # then it makes all blank pages in new directory
 # this is just faster than making each page with convert
 for ((i=1; i<${pagesNeeded}; i++)); do
   cp /app/public/zine-pages/1-page.png /app/public/zine-pages/$(($i+1))-page.png
+  
 done
 
 
@@ -87,8 +90,8 @@ xImagePercent=9706 # represents 97.06% <-- set this manually for different zine 
 yImagePercent=4773 # represents 47.73% <-- set this manually for different zine layouts
 
 # calculate percentages into pixels
-xImageSizePixels=$(((xImagePercent * xPageSizePixels) / 10000)) # <-- division simulates percentage
-yImageSizePixels=$(((yImagePercent * yPageSizePixels) / 10000))
+yImageSizePixels=$(((xImagePercent * xPageSizePixels) / 10000)) # <-- division simulates percentage
+xImageSizePixels=$(((yImagePercent * yPageSizePixels) / 10000))
 # note that bash only uses integers so perform calculation manually before running script
 
 # this resizes all images in place
@@ -108,7 +111,7 @@ done
 # the pattern here is tricky since it needs to be applied before reordering the images for page placement
 # this is best calculated manually with a physical mock-up of the zine size
 
-rotations=(270 90 90 270) # <--- set these manually for different zine layouts
+rotations=(270 270 90 90) # <--- set these manually for different zine layouts
 rotationsLength=${#rotations[@]}
 
 for ((i=0; i<$((zineImageCount)); i++)); do
@@ -236,7 +239,20 @@ pageFileCount=${#pageFileNames[@]}
 for ((i=0; i<$((pageFileCount)); i++)); do
   # grab page name and apply imagemagick styling
   pageFileName=${pageFileNames[$((i))]}
-  convert $pageFileName -colorspace gray -ordered-dither o2x2 $pageFileName
+  # convert $pageFileName -colorspace gray -ordered-dither o2x2 $pageFileName
+
+  # magick $pageFileName -color-threshold 'sRGB(163,112,0)-sRGB(203,152,40)' $pageFileName
+  # magick $pageFileName -color-threshold 'sRGB(0,0,0)-sRGB(150,150,150)' $pageFileName
+  # convert $pageFileName -colorspace gray -edge 1 -fuzz 1% -trim +repage $pageFileName
+  # magick $pageFileName -colorspace gray -color-threshold 'gray(46.4152%)-gray(55.3278%)' $pageFileName
+  # convert $pageFileName -negate $pageFileName
+  convert $pageFileName -ordered-dither o2x2 $pageFileName # <--- color dither
+  # convert $pageFileName -colorspace gray -ordered-dither o2x2 $pageFileName # <--- black and white dither
+  # convert $pageFileName -colorspace RGB -fuzz 15% -fill red -opaque black $pageFileName
+  # convert $pageFileName -colorspace RGB -fuzz 15% -fill blue -opaque black $pageFileName
+  
+  # get rid of lime placeholder color
+  convert $pageFileName -colorspace RGB -fuzz 1% -fill white -opaque lime $pageFileName
 done
 
 
@@ -263,3 +279,13 @@ currentTime=`date -u +%s`
 magick convert /app/public/zine-pages/* /app/public/output/zine.pdf
 
 # open zine-${currentTime}.pdf
+
+
+
+
+# ~~~~~~~~~~ CLEAR OUT FILES ~~~~~~~~~~~~~~~~~~~~
+
+rm /app/public/zine-images/*
+rm /app/public/zine-pages/*
+# rm /app/public/uploads/*
+echo hello >> /app/public/uploads/dummy-file.txt
