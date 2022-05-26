@@ -320,7 +320,7 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
   //   exec(command);
   // })
   if (req.files) {
-    exec(`bash ./public/bashscripts/halfpage-1-localtesting.sh`, (err, stdout, stderr) => {
+    exec(`bash ./public/bashscripts/halfpage-1.sh`, (err, stdout, stderr) => {
       if (err) throw err
   
       res.download("./public/output/zine.pdf", (err) => {
