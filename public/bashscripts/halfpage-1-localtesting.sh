@@ -100,7 +100,8 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   zineImage=${zineImageFileNames[$((i))]}
   convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
 
-  convert $zineImage -colorspace gray -ordered-dither o2x2 $zineImage # <--- black and white dither
+  # convert $zineImage -colorspace gray -ordered-dither o2x2 $zineImage # <--- black and white dither
+  convert $zineImage -monochrome $zineImage # <--- black and white dither
   convert $zineImage -colorspace RGB -fuzz 15% -fill red -opaque black $zineImage # <--- replace black with red
 done
 
