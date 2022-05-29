@@ -312,6 +312,7 @@ app.post('/merge', upload.array('files', 100), (req, res) => {
 
 
 // ~~~~~~~~~~ Half-Page Portrait Side-Stapled Zine ~~~~~~~~~~
+// add csrf middleware
 app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res) => {
   // [
   //   "rm ./public/pages/*",
@@ -328,10 +329,15 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
   
         // delete the files which is stored
   
+        // clean up files in errors route OR catch block here and then rethrow
+        // wrap this in try because file.path might not exist
+        // READ THE DOCS
+        // 'best effort delete'
         req.files.forEach(file => {
           fs.unlinkSync(file.path)
         });
   
+        // wrap this in try/catch or pass unlinkSync option to not care if it doesnt exist
         // fs.unlinkSync("./public/output/zine.pdf")
         fs.unlinkSync("./public/output/zine.pdf")
       })

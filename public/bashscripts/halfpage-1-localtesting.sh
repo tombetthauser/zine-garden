@@ -1,6 +1,18 @@
 # ~~~~~~~~~~ GENERAL SETUP ~~~~~~~~~~~~~~~~~~~~
 
 # log failures / actions in the shell
+# NOT SAFE
+export # <--- shows all env variables - Careful!
+# use time to profile performance -- ie $ time slee 2
+# there MIGHT be a startup cost every time imagemagick is used / opened
+# MIGHT be a way to feed imagemagick a script so it only starts up once
+# MIGHT be a way to leave it started up as a server? so it doesnt close every time
+# MIGHT be a way to import imagemagic library into a node script
+# bash strict mode -- $ set -ex ...? -- stops execution if theres an error
+# https://legacy.imagemagick.org/Usage/canvas/
+# https://legacy.imagemagick.org/Usage/canvas
+# http://redsymbol.net/articles/unofficial-bash-strict-mode
+# gnu paralell command might be able to run these concurrently so all images could be processed at once
 set -x
 
 # first we delete and recreate our zine images directory
@@ -32,7 +44,7 @@ sheetMax=4
 # then it adds another tow pages (one double-sided print sheet) if there were any leftover pages
 # its good this is here but it really shouldnt be used
 # zine page counts should be adjusted to fit evenly onto desired print layout without blank end pages
-pagesNeeded=$(((zineImageCount / pageMax)+((zineImageCount % pageMax > 0 ) * 2)))
+pagesNeeded=$(((zineImageCount / pageMax) + (zineImageCount % pageMax > 0)))
 
 # below are the pixel dimensions for page files which represent resolution
 # these will determine how pixellated or compressed any styling done later on is
@@ -64,6 +76,8 @@ yPageSizePixels=550
 
 # convert -size ${xPageSizePixels}x${yPageSizePixels} xc:white ./public/zine-pages/1-page.png
 convert -size ${xPageSizePixels}x${yPageSizePixels} xc:lime ./public/zine-pages/1-page.png
+# convert -size ${xPageSizePixels}x${yPageSizePixels} canvas:lime ./public/zine-pages/1-page.png # <--- not a misuse
+
 # convert ./public/zine-pages/1-page.png -colorspace sRGB -fuzz 1% -fill white -opaque lime ./public/zine-pages/1-page.png
 
 
@@ -115,7 +129,8 @@ done
 # the pattern here is tricky since it needs to be applied before reordering the images for page placement
 # this is best calculated manually with a physical mock-up of the zine size
 
-rotations=(270 270 90 90) # <--- set these manually for different zine layouts
+# rotations=(270 270 90 90) # <--- set these manually for different zine layouts
+rotations=(270 90 90 270) # <--- set these manually for different zine layouts
 rotationsLength=${#rotations[@]}
 
 for ((i=0; i<$((zineImageCount)); i++)); do
@@ -169,12 +184,23 @@ done
 relativePageOrders=(1 3 4 2) # <--- set these manually for different zine layouts
 relativePageOrdersLength=${#relativePageOrders[@]}
 
+# make a variable to track the max image placement location
+# this will be used when the images are actually getting placed
+# so we can place blank images when there are uneven image numbers
+maxImagePlacementNumber=1
+
 # rename all zine image files for correct order
 for ((i=0; i<$((zineImageCount)); i++)); do
   zineImage=${zineImageFileNames[$((i))]}
   relativeOrder=${relativePageOrders[$((i % relativePageOrdersLength))]}
   pageNumber=$((((i) / 4))) # <-- first page is zero since divide will always round down
   absoluteOrder=$(((pageNumber * 4) + relativeOrder))
+
+  # update maxImagePlacementNumber
+  if [ $absoluteOrder -gt $maxImagePlacementNumber ]
+  then
+    maxImagePlacementNumber=$absoluteOrder
+  fi
   
   # use some horrible bash syntax to separate the filetype for renaming
   extension="${zineImage##*.}"
@@ -216,20 +242,52 @@ done
 
 
 
-# ~~~~~~~~~~ ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
+# # ~~~~~~~~~~ ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
+
+# # recollect new image names
+# zineImageFileNames=(./public/zine-images/*)
+
+# # place all zine images on pages in new order alternating positions
+# for ((i=0; i<$((zineImageCount)); i++)); do
+#   zineImage=${zineImageFileNames[$((i))]}
+#   xPosition=$((xCoordinatesPixels[$((i % xCoordinatesPercentagesLength))]))
+#   yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
+#   pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
+
+#   magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
+# done
+
+
+
+# ~~~~~~~~~~ NEW ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
+
+pageNumberPlacements=(2 2 1 1)
+pageNumberPlacementsLength=${#pageNumberPlacements[@]}
 
 # recollect new image names
 zineImageFileNames=(./public/zine-images/*)
 
 # place all zine images on pages in new order alternating positions
-for ((i=0; i<$((zineImageCount)); i++)); do
-  zineImage=${zineImageFileNames[$((i))]}
-  xPosition=$((xCoordinatesPixels[$((i % xCoordinatesPercentagesLength))]))
-  yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
-  pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
+for ((i=0; i<$((maxImagePlacementNumber)); i++)); do
+  # zineImageFileName=${i}-ordered
+  zineImage=./public/zine-images/$((i))-ordered*
+  # if [ 1 -gt 0 ]
+  if [ -f $zineImage ]
+  then
+    # xPosition=$((xCoordinatesPixels[$(((i) % xCoordinatesPercentagesLength))]))
+    # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
+    xPosition=0
+    yPosition=$((((i - 1) * ((yPageSizePixels * 5) / 10)) % yPageSizePixels))
+    # pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
+    pageNumber=1
+    # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
 
-  magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
+
+    magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
+  fi
+  # zineImage=${zineImageFileNames[$((i))]}
 done
+
 
 
 
@@ -267,19 +325,21 @@ done
 
 # this is to help retain the pixel sharpness on lower resolution dithers etc
 # the conversion to a jpeg is to help speed up printing
+# the conversion to a png retains crisp edges for bitmaps / dithers etc
 
 for ((i=0; i<$((pageFileCount)); i++)); do
   pageFileName=${pageFileNames[$((i))]}
 
   convert $pageFileName -filter point -resize 1700x2200 $pageFileName
-  magick $pageFileName ./public/zine-pages/$((i))-page.jpg
+  # magick $pageFileName ./public/zine-pages/$((i))-page.jpg
+  magick $pageFileName ./public/zine-pages/$((i))-page.png
   rm $pageFileName
 done
 
 
 
 # ~~~~~~~~~~ COMBINE INTO SINGLE PDF ~~~~~~~~~~~~~~~~~~~~
-currentTime=`date -u +%s`
+# currentTime=`date -u +%s`
 # rm ./public/output/zine.pdf
 magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
@@ -290,7 +350,7 @@ magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
 # ~~~~~~~~~~ CLEAR OUT FILES ~~~~~~~~~~~~~~~~~~~~
 
-rm ./public/zine-images/*
-rm ./public/zine-pages/*
+# rm ./public/zine-images/*
+# rm ./public/zine-pages/*
 # rm ./public/uploads/*
 echo hello >> ./public/uploads/dummy-file.txt
