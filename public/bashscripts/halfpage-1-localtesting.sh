@@ -350,7 +350,7 @@ magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
 # ~~~~~~~~~~ CLEAR OUT FILES ~~~~~~~~~~~~~~~~~~~~
 
-# rm ./public/zine-images/*
-# rm ./public/zine-pages/*
-# rm ./public/uploads/*
+rm ./public/zine-images/*
+rm ./public/zine-pages/*
+rm ./public/uploads/*
 echo hello >> ./public/uploads/dummy-file.txt
