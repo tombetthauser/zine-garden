@@ -44,7 +44,18 @@ sheetMax=4
 # then it adds another tow pages (one double-sided print sheet) if there were any leftover pages
 # its good this is here but it really shouldnt be used
 # zine page counts should be adjusted to fit evenly onto desired print layout without blank end pages
-pagesNeeded=$(((zineImageCount / pageMax) + (zineImageCount % pageMax > 0)))
+
+# pagesNeeded=$(((zineImageCount / pageMax) + (zineImageCount % pageMax > 0))) # <--- old version didnt work for 3 or 6 etc
+# 2 / 4 = 0 --> 0 * 2 = 0
+# 2 % 4 = 2
+pagesNeeded=$(((zineImageCount / sheetMax) * 2))
+if [ $(($zineImageCount % $sheetMax)) -gt 1 ]
+then
+  pagesNeeded=$((pagesNeeded+2))
+elif [ $(($zineImageCount % $sheetMax)) -gt 0 ]
+then
+  pagesNeeded=$((pagesNeeded+1))
+fi
 
 # below are the pixel dimensions for page files which represent resolution
 # these will determine how pixellated or compressed any styling done later on is
@@ -171,6 +182,24 @@ done
 
 
 
+# ~~~~~~~~~~ MAKE 1PX BLANK IMAGE HOLDERS ~~~~~~~~~~~~~~~~~~~~
+
+if [ $((zineImageCount % sheetMax)) -gt 0 ]
+then
+  rm -rf ./public/zine-placeholders
+  mkdir ./public/zine-placeholders
+
+  convert -size 1x1 xc:lime ./public/zine-placeholders/1001-ordered.png
+
+  imageCountRoundedUp=$((zineImageCount + (sheetMax - (zineImageCount % sheetMax))))
+
+  for ((i=1; i<((imageCountRoundedUp)); i++)); do
+    cp ./public/zine-placeholders/1001-ordered.png ./public/zine-placeholders/$((i + 1 + 1000))-ordered.png
+  done
+fi
+
+
+
 # ~~~~~~~~~~ CALCULATE IMAGE ORDER FOR PAGES ~~~~~~~~~~~~~~~~~~~~
 
 # this renames the pages based on the order they should be added to the pages
@@ -194,7 +223,7 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   zineImage=${zineImageFileNames[$((i))]}
   relativeOrder=${relativePageOrders[$((i % relativePageOrdersLength))]}
   pageNumber=$((((i) / 4))) # <-- first page is zero since divide will always round down
-  absoluteOrder=$(((pageNumber * 4) + relativeOrder))
+  absoluteOrder=$(((pageNumber * 4) + relativeOrder + 1000))
 
   # update maxImagePlacementNumber
   if [ $absoluteOrder -gt $maxImagePlacementNumber ]
@@ -204,10 +233,12 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   
   # use some horrible bash syntax to separate the filetype for renaming
   extension="${zineImage##*.}"
-  newFileName=./public/zine-images/$((absoluteOrder))-ordered.$extension
+  rm ./public/zine-placeholders/$((absoluteOrder))-ordered.png
+  rm ./public/zine-images/$((absoluteOrder))-ordered*
   mv $zineImage ./public/zine-images/$((absoluteOrder))-ordered.$extension
 done
 
+mv ./public/zine-placeholders/* ./public/zine-images/
 
 
 
@@ -246,6 +277,7 @@ done
 
 # recollect new image names
 zineImageFileNames=(./public/zine-images/*)
+zineImageCount=${#zineImageFileNames[@]}
 
 # place all zine images on pages in new order alternating positions
 for ((i=0; i<$((zineImageCount)); i++)); do
@@ -352,5 +384,5 @@ magick convert ./public/zine-pages/* ./public/output/zine.pdf
 
 rm ./public/zine-images/*
 rm ./public/zine-pages/*
-rm ./public/uploads/*
+# rm ./public/uploads/*
 echo hello >> ./public/uploads/dummy-file.txt
