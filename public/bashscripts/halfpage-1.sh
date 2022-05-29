@@ -12,6 +12,7 @@ mkdir ./public/zine-images
 mkdir ./public/zine-pages
 
 
+
 # ~~~~~ SET ZINE DIMENSIONS ~~~~~ 
 
 #   single side
@@ -22,6 +23,7 @@ xZineImageCount=1
 yZineIMageCount=2
 
 
+
 # ~~~~~ SET ZINE ORIENTATION ~~~~~ 
 
 #   rotation represents zine orientation
@@ -29,6 +31,7 @@ yZineIMageCount=2
 #   measured in degrees
 
 pageOneRotation=270 
+
 
 
 # ~~~~~ SET ZINE RESOLUTION ~~~~~ 
@@ -41,6 +44,8 @@ pageOneRotation=270
 #   border percentage represents 1.51%
 #   which is 1/8th inch on an 8 1/4 inch print page
 #   note 1/8th inch border is taken off 8.5 inch print width
+#   starts with width but calculates pixels
+#   pixels should be x/y agnostic
 
 xPageSizePixels=850
 yPageSizePixels=1100
@@ -48,6 +53,10 @@ yPageSizePixels=1100
 xBorderPercent=151 # represents 1.51%
 eightInchPixels=$(( (xPageSixePixels * xBorderPercent) / 10000 ))
 quarterInchPixels=$(( eighthInchPixels * 2 ))
+
+xImagePixels=
+yImagePixels=
+
 
 
 # set pages needed array

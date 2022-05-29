@@ -242,51 +242,51 @@ done
 
 
 
-# # ~~~~~~~~~~ ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
-
-# # recollect new image names
-# zineImageFileNames=(./public/zine-images/*)
-
-# # place all zine images on pages in new order alternating positions
-# for ((i=0; i<$((zineImageCount)); i++)); do
-#   zineImage=${zineImageFileNames[$((i))]}
-#   xPosition=$((xCoordinatesPixels[$((i % xCoordinatesPercentagesLength))]))
-#   yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
-#   pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
-
-#   magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
-# done
-
-
-
-# ~~~~~~~~~~ NEW ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
-
-pageNumberPlacements=(2 2 1 1)
-pageNumberPlacementsLength=${#pageNumberPlacements[@]}
+# ~~~~~~~~~~ OLD PARTIALLY WORKING ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
 
 # recollect new image names
 zineImageFileNames=(./public/zine-images/*)
 
 # place all zine images on pages in new order alternating positions
-for ((i=0; i<$((maxImagePlacementNumber)); i++)); do
-  # zineImageFileName=${i}-ordered
-  zineImage=./public/zine-images/$((i))-ordered*
-  # if [ 1 -gt 0 ]
-  if [ -f $zineImage ]
-  then
-    # xPosition=$((xCoordinatesPixels[$(((i) % xCoordinatesPercentagesLength))]))
-    # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
-    xPosition=0
-    yPosition=$((((i - 1) * ((yPageSizePixels * 5) / 10)) % yPageSizePixels))
-    # pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
-    pageNumber=1
-    # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
+for ((i=0; i<$((zineImageCount)); i++)); do
+  zineImage=${zineImageFileNames[$((i))]}
+  xPosition=$((xCoordinatesPixels[$((i % xCoordinatesPercentagesLength))]))
+  yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
+  pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
 
-
-    magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
-  fi
-  # zineImage=${zineImageFileNames[$((i))]}
+  magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
 done
+
+
+
+# # ~~~~~~~~~~ NEW BROKEN ADD IMAGES TO PAGES ~~~~~~~~~~~~~~~~~~~~
+
+# pageNumberPlacements=(2 2 1 1)
+# pageNumberPlacementsLength=${#pageNumberPlacements[@]}
+
+# # recollect new image names
+# zineImageFileNames=(./public/zine-images/*)
+
+# # place all zine images on pages in new order alternating positions
+# for ((i=0; i<$((maxImagePlacementNumber)); i++)); do
+#   # zineImageFileName=${i}-ordered
+#   zineImage=./public/zine-images/$((i))-ordered*
+#   # if [ 1 -gt 0 ]
+#   if [ -f $zineImage ]
+#   then
+#     # xPosition=$((xCoordinatesPixels[$(((i) % xCoordinatesPercentagesLength))]))
+#     # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
+#     xPosition=0
+#     yPosition=$((((i - 1) * ((yPageSizePixels * 5) / 10)) % yPageSizePixels))
+#     # pageNumber=$((((i) / 2) + 1)) # first page is zero since divide will always round down
+#     pageNumber=1
+#     # yPosition=$((yCoordinatesPixels[$(((i) % yCoordinatesPercentagesLength))]))
+
+
+#     magick composite -geometry +$((xPosition))+$((yPosition)) $zineImage ./public/zine-pages/$((pageNumber))-page.png ./public/zine-pages/$((pageNumber))-page.png
+#   fi
+#   # zineImage=${zineImageFileNames[$((i))]}
+# done
 
 
 
