@@ -321,7 +321,15 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
   //   exec(command);
   // })
   if (req.files) {
-    exec(`bash ./public/bashscripts/halfpage-1-localtesting.sh`, (err, stdout, stderr) => {
+
+    let bashArgs = []
+    // if (req.body.resolution) bashArgs.push(req.body.resolution);
+    // if (req.body.monochrome) bashArgs.push("monochrome");
+    // if (req.body.dither) bashArgs.push("dither");
+    // if (req.body.invert) bashArgs.push("invert");
+    if (req.body["black-replacement"]) bashArgs.push(req.body["black-replacement"]);
+
+    exec(`bash ./public/bashscripts/halfpage-1.sh ${bashArgs.join(" ")}`, (err, stdout, stderr) => {
       if (err) throw err
   
       res.download("./public/output/zine.pdf", (err) => {

@@ -37,10 +37,83 @@
         <li>half page zines: multiples of 4 (4, 8, 12 etc)</li>
         <li>full / double / triple / quadrouple page zines: multiples of 2 (2, 4, 6 etc)</li>
       </ul> -->
+      <div>
+        <label>Resolution:</label>
+        <select name="resolution">
+          <option value="resolution-small">small</option>
+          <option selected value="resolution-medium">medium</option>
+          <option value="resolution-large">large</option>
+          <option value="resolution-extra-large">extra large</option>
+        </select>
+      </div>
       
+      <div>
+        <label>Monochrome:</label>
+        <input name="monochrome" type="checkbox">
+      </div>
       
-      <!-- <label>Invert Images:</label>
-      <input name="invert" type="checkbox" checked> -->
+      <div>
+        <label>Invert:</label>
+        <input name="invert" type="checkbox">
+      </div>
+      
+      <div>
+        <label>Posterize:</label>
+        <input name="posterize" type="checkbox">
+      </div>
+      
+      <div>
+        <label>Trace Edges:</label>
+        <input name="trace-edges" type="checkbox">
+      </div>
+      
+      <div>
+        <label>Pixelate / Dither:</label>
+        <input name="dither" type="checkbox">
+      </div>
+      
+      <div>
+        <label>Black Replacement Color:</label>
+        <select name="black-replacement">
+          <option selected value> -- optional -- </option>
+          <option value="black-red">red</option>
+          <option value="black-PaleVioletRed1">pink</option>
+          <option value="black-MediumPurple1">purple</option>
+          <option value="black-SteelBlue1">steelblue</option>
+          <option value="black-blue">blue</option>
+          <option value="black-green">green</option>
+          <option value="black-MediumTurquoise">turquoise</option>
+          <option value="black-yellow">yellow</option>
+          <option value="black-gold">gold</option>
+          <option value="black-goldenrod1">goldenrod</option>
+          <option value="black-white">white</option>
+        </select>
+      </div>
+      
+      <div>
+        <label>White Replacement Color:</label>
+        <select name="white-replacement">
+          <option selected value> -- optional -- </option>
+          <option value="white-red">red</option>
+          <option value="white-PaleVioletRed1">pink</option>
+          <option value="white-MediumPurple1">purple</option>
+          <option value="white-SteelBlue1">steelblue</option>
+          <option value="white-blue">blue</option>
+          <option value="white-green">green</option>
+          <option value="white-MediumTurquoise">turquoise</option>
+          <option value="white-yellow">yellow</option>
+          <option value="white-gold">gold</option>
+          <option value="white-goldenrod1">goldenrod</option>
+          <option value="white-black">black</option>
+        </select>
+      </div>
+      
+
+    <!-- if (body.resolution) bashArgs.push(body.resolution); -->
+    <!-- if (body.monochrome) bashArgs.push("monochrome"); -->
+    <!-- if (body.dither) bashArgs.push("dither"); -->
+    <!-- if (body.invert) bashArgs.push("invert"); -->
+    <!-- if (body.color) bashArgs.push(body.color); -->
       
      
       <!-- <label>Force Image Rotation: (will guarantee correct orientation on all images / mainly for iPhone images)</label>
