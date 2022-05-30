@@ -91,6 +91,12 @@ replaceColorWhite=false
 xPageSizePixels=850
 yPageSizePixels=1100
 
+monochrome=false
+invert=false
+posterize=false
+edges=false
+dither=false
+
 for arg in "$@"
 do
   if [[ $arg = black:* ]]; then
@@ -107,9 +113,29 @@ do
     xPixelsTemp=(${arg//:/ })
     xPageSizePixels=${xPixelsTemp[1]}
     yPageSizePixels=${xPixelsTemp[2]}
-    # xPageSizePixels=212
-    # yPageSizePixels=275
   fi
+
+  if [[ $arg = monochrome:* ]]; then 
+    monochrome=true
+  fi
+  
+  if [[ $arg = invert:* ]]; then 
+    invert=true
+  fi
+  
+  if [[ $arg = posterize:* ]]; then 
+    posterize=true
+  fi
+  
+  if [[ $arg = edges:* ]]; then 
+    edges=true
+  fi
+  
+  if [[ $arg = dither:* ]]; then 
+    dither=true
+  fi
+  
+
 done
 
 
@@ -177,18 +203,38 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   convert $zineImage -resize $((xImageSizePixels))x$((yImageSizePixels))^ -gravity center -extent $((xImageSizePixels))x$((yImageSizePixels)) $zineImage
 
   # convert $zineImage -colorspace gray -ordered-dither o2x2 $zineImage # <--- black and white dither
-  convert $zineImage -monochrome $zineImage # <--- black and white dither
+  # convert $zineImage -monochrome $zineImage # <--- black and white dither
   # goldenrod1
   # MediumTurquoise
   # MediumPurple1
   # PaleVioletRed1
 
+  if [ $monochrome = true ]
+  then convert $zineImage -colorspace Gray $zineImage
+  fi
+
+  if [ $invert = true ]
+  then echo pass
+  fi
+
+  if [ $posterize = true ]
+  then echo pass
+  fi
+
+  if [ $edges = true ]
+  then echo pass
+  fi
+
+  if [ $dither = true ]
+  then echo pass
+  fi
+
   if ! [ $replaceColorBlack = false ]
-  then convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorBlack -opaque black $zineImage # <--- replace black with red
+  then convert $zineImage -colorspace sRGB -fuzz 33% -fill $replaceColorBlack -opaque black $zineImage
   fi
 
   if ! [ $replaceColorWhite = false ]
-  then convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorWhite -opaque white $zineImage # <--- replace black with red
+  then convert $zineImage -colorspace sRGB -fuzz 33% -fill $replaceColorWhite -opaque white $zineImage
   fi
 
 done
