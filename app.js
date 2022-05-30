@@ -327,7 +327,8 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
     // if (req.body.monochrome) bashArgs.push("monochrome");
     // if (req.body.dither) bashArgs.push("dither");
     // if (req.body.invert) bashArgs.push("invert");
-    if (req.body["black-replacement"]) bashArgs.push(req.body["black-replacement"]);
+    if (req.body["black-replacement"]) bashArgs.push(`black:${req.body["black-replacement"]}`);
+    if (req.body["white-replacement"]) bashArgs.push(`white:${req.body["white-replacement"]}`);
 
     exec(`bash ./public/bashscripts/halfpage-1.sh ${bashArgs.join(" ")}`, (err, stdout, stderr) => {
       if (err) throw err

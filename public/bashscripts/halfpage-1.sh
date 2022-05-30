@@ -102,14 +102,21 @@ done
 
 
 # ~~~~~~~~~~ GRAB ARGS ~~~~~~~~~~~~~~~~~~~~
-replaceColorBlack="black"
+replaceColorBlack=false
+replaceColorWhite=false
 
 for arg in "$@"
 do
-  if [[ $arg = black-* ]]
+  if [[ $arg = black:* ]]
   then
-    tempColor=(${arg//-/ })
+    tempColor=(${arg//:/ })
     replaceColorBlack=${tempColor[1]}
+  fi
+
+  if [[ $arg = white:* ]]
+  then
+    tempColor=(${arg//:/ })
+    replaceColorWhite=${tempColor[1]}
   fi
 done
 
@@ -159,7 +166,17 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   # MediumTurquoise
   # MediumPurple1
   # PaleVioletRed1
-  convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorBlack -opaque black $zineImage # <--- replace black with red
+
+  if ! [ $replaceColorBlack = false ]
+  then
+    convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorBlack -opaque black $zineImage # <--- replace black with red
+  fi
+
+  if ! [ $replaceColorWhite = false ]
+  then
+    convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorWhite -opaque white $zineImage # <--- replace black with red
+  fi
+
 done
 
 
