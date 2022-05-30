@@ -1,3 +1,34 @@
+replaceColorBlack="black"
+
+for arg in "$@"
+do
+  if [[ $arg = black-* ]]
+  then
+    tempColor=(${arg//-/ })
+    replaceColorBlack=${tempColor[1]}
+  fi
+done
+
+echo $replaceColorBlack
+
+
+# dog=false
+# cat=false
+
+# for arg in "$@"
+# do
+#   if [[ $arg = ca* ]]
+#   then
+#     cat=true
+#   fi
+# done
+
+# if [ $cat = true ]
+# then
+#   echo "HEY THERE DOGGY"
+# fi
+
+
 # relativePageOrders=(1 3 4 2) # <--- set these manually for different zine layouts
 # relativePageOrdersLength=${#relativePageOrders[@]}
 
@@ -19,14 +50,14 @@
 # echo $maxImagePlacementNumber
 
 
-foo=test
+# foo=test
 
-if [ -f ./${foo}* ]
-then 
-  echo "found!"
-else
-  echo "not found!"
-fi
+# if [ -f ./${foo}* ]
+# then 
+#   echo "found!"
+# else
+#   echo "not found!"
+# fi
 
 
 
