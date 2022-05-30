@@ -330,8 +330,9 @@ app.post('/halfpage-portrait-sidestaple', upload.array('files', 100), (req, res)
     if (req.body["monochrome"]) bashArgs.push(`monochrome:${req.body["monochrome"]}`);
     if (req.body["invert"]) bashArgs.push(`invert:${req.body["invert"]}`);
     if (req.body["posterize"]) bashArgs.push(`posterize:${req.body["posterize"]}`);
-    if (req.body["edges"]) bashArgs.push(`edges:${req.body["edges"]}`);
-    if (req.body["dither"]) bashArgs.push(`dither:${req.body["dither"]}`);
+    if (req.body["trace-edges"]) bashArgs.push(`trace-edges:${req.body["edges"]}`);
+    if (req.body["color-dither"]) bashArgs.push(`color-dither:${req.body["color-dither"]}`);
+    if (req.body["monochrome-dither"]) bashArgs.push(`monochrome-dither:${req.body["monochrome-dither"]}`);
 
     exec(`bash ./public/bashscripts/halfpage-1.sh ${bashArgs.join(" ")}`, (err, stdout, stderr) => {
       if (err) throw err

@@ -94,8 +94,12 @@ yPageSizePixels=1100
 monochrome=false
 invert=false
 posterize=false
-edges=false
+traceEdges=false
 dither=false
+  
+colorDither=false
+monochromeDither=false
+
 
 for arg in "$@"
 do
@@ -118,23 +122,26 @@ do
   if [[ $arg = monochrome:* ]]; then 
     monochrome=true
   fi
-  
+
   if [[ $arg = invert:* ]]; then 
     invert=true
   fi
-  
+
   if [[ $arg = posterize:* ]]; then 
     posterize=true
   fi
-  
-  if [[ $arg = edges:* ]]; then 
-    edges=true
+
+  if [[ $arg = trace-edges:* ]]; then 
+    traceEdges=true
   fi
-  
-  if [[ $arg = dither:* ]]; then 
-    dither=true
+
+  if [[ $arg = color-dither:* ]]; then 
+    colorDither=true
   fi
-  
+
+  if [[ $arg = monochrome-dither:* ]]; then 
+    monochromeDither=true
+  fi
 
 done
 
@@ -213,21 +220,35 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   then convert $zineImage -colorspace Gray $zineImage
   fi
 
-  if [ $invert = true ]
-  then echo pass
-  fi
-
   if [ $posterize = true ]
-  then echo pass
+  then convert $zineImage -separate -threshold 50% -combine $zineImage
   fi
 
-  if [ $edges = true ]
-  then echo pass
+  if [ $traceEdges = true ]
+  then convert $zineImage -colorspace sRGB -edge 1 -fuzz 1% -trim +repage $zineImage
+  # then convert $zineImage -colorspace gray -edge 1 -fuzz 1% -trim +repage $zineImage
   fi
 
-  if [ $dither = true ]
-  then echo pass
+  if [ $invert = true ]
+  then convert $zineImage -negate $zineImage
   fi
+
+  # if [ $colorDither = true ]
+  # then convert $zineImage -channel RGBA -separate \
+  #         \( +clone -remap pattern:gray50 \) \
+  #         +swap +delete -combine $zineImage
+  # fi
+
+  if [ $colorDither = true ]
+  then convert $zineImage -channel RGBA -separate \
+          \( +clone -dither FloydSteinberg -remap pattern:gray50 \) \
+          +swap +delete -combine $zineImage
+  fi
+
+  if [ $monochromeDither = true ]
+  then convert $zineImage -monochrome $zineImage
+  fi
+
 
   if ! [ $replaceColorBlack = false ]
   then convert $zineImage -colorspace sRGB -fuzz 33% -fill $replaceColorBlack -opaque black $zineImage
