@@ -1,15 +1,20 @@
-replaceColorBlack="black"
+numA=5
+numB=5
 
 for arg in "$@"
 do
-  if [[ $arg = black-* ]]
+  if [[ $arg = nums:* ]]
   then
-    tempColor=(${arg//-/ })
-    replaceColorBlack=${tempColor[1]}
+    tempNums=(${arg//:/ })
+    numA=${tempNums[1]}
+    numB=${tempNums[2]}
   fi
 done
 
-echo $replaceColorBlack
+echo $numA
+echo $numB
+echo $((numA + numB))
+
 
 
 # dog=false

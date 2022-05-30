@@ -25,7 +25,7 @@
       <input type="hidden" name="_csrf" value=<%=csrfToken %>>
       <div>
         <label>Select zine page images:</label>
-        <input type="file" name="files" multiple/>
+        <input required type="file" name="files" multiple/>
       </div>
 
       <!-- <p class="note">
@@ -40,10 +40,11 @@
       <div>
         <label>Resolution:</label>
         <select name="resolution">
-          <option value="resolution-small">small</option>
-          <option selected value="resolution-medium">medium</option>
-          <option value="resolution-large">large</option>
-          <option value="resolution-extra-large">extra large</option>
+          <option value="3400:4400">extra large</option>
+          <option value="1700:2200">large</option>
+          <option selected value="850:1100">medium</option>
+          <option value="425:550">small</option>
+          <option value="217:275">extra small</option>
         </select>
       </div>
       

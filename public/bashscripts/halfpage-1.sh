@@ -61,20 +61,56 @@ fi
 # these will determine how pixellated or compressed any styling done later on is
 # comment them in and out freely to experiment
 
+# extra large
 # xPageSizePixels=3400
 # yPageSizePixels=4400
 
+# large
 # xPageSizePixels=1700
 # yPageSizePixels=2200
 
+# medium
 # xPageSizePixels=850
 # yPageSizePixels=1100
 
-xPageSizePixels=425
-yPageSizePixels=550
+# small
+# xPageSizePixels=425
+# yPageSizePixels=550
 
+# extra small
 # xPageSizePixels=217
 # yPageSizePixels=275
+
+
+
+
+# ~~~~~~~~~~ GRAB ARGS ~~~~~~~~~~~~~~~~~~~~
+replaceColorBlack=false
+replaceColorWhite=false
+
+xPageSizePixels=850
+yPageSizePixels=1100
+
+for arg in "$@"
+do
+  if [[ $arg = black:* ]]; then
+    tempColor=(${arg//:/ })
+    replaceColorBlack=${tempColor[1]}
+  fi
+
+  if [[ $arg = white:* ]]; then
+    tempColor=(${arg//:/ })
+    replaceColorWhite=${tempColor[1]}
+  fi
+
+  if [[ $arg = resolution:* ]]; then
+    xPixelsTemp=(${arg//:/ })
+    xPageSizePixels=${xPixelsTemp[1]}
+    yPageSizePixels=${xPixelsTemp[2]}
+    # xPageSizePixels=212
+    # yPageSizePixels=275
+  fi
+done
 
 
 
@@ -99,26 +135,6 @@ for ((i=1; i<${pagesNeeded}; i++)); do
 done
 
 
-
-
-# ~~~~~~~~~~ GRAB ARGS ~~~~~~~~~~~~~~~~~~~~
-replaceColorBlack=false
-replaceColorWhite=false
-
-for arg in "$@"
-do
-  if [[ $arg = black:* ]]
-  then
-    tempColor=(${arg//:/ })
-    replaceColorBlack=${tempColor[1]}
-  fi
-
-  if [[ $arg = white:* ]]
-  then
-    tempColor=(${arg//:/ })
-    replaceColorWhite=${tempColor[1]}
-  fi
-done
 
 # //   <option selected value> -- optional -- </option>
 # //   <option value="black-red">red</option>
@@ -168,13 +184,11 @@ for ((i=0; i<$((zineImageCount)); i++)); do
   # PaleVioletRed1
 
   if ! [ $replaceColorBlack = false ]
-  then
-    convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorBlack -opaque black $zineImage # <--- replace black with red
+  then convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorBlack -opaque black $zineImage # <--- replace black with red
   fi
 
   if ! [ $replaceColorWhite = false ]
-  then
-    convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorWhite -opaque white $zineImage # <--- replace black with red
+  then convert $zineImage -colorspace RGB -fuzz 15% -fill $replaceColorWhite -opaque white $zineImage # <--- replace black with red
   fi
 
 done
