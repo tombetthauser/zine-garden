@@ -1,6 +1,11 @@
 # Zine Garden 🌷
 
-A work in progress web interface for building printable zine files. For the time working fine for small / medium file processing but unstable and very slow for reasonably large processing jobs.
+A work in progress web interface for building printable zine files as well as uploading zine files and downloading other people's zine files for free. For the time working fine for small / medium file processing but unstable and very slow for reasonably large processing jobs.
+
+```
+
+```
+
 
 ---
 
