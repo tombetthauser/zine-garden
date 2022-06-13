@@ -1,12 +1,12 @@
-# Express Project Skeleton
+# Zine Garden 🌷
 
-Use this project skeleton as a starting point for structuring your app. Things to note
-* Sequelize configuration has not yet been added -- you will need to set that up yourself
-* You may find yourself wanting to use javascript -- js files can be added in `public/javascripts` and should be appended to the Pug templates as needed
-* CSS files can go in `public/stylesheets` and also will need to be added to Pug templates
+A work in progress web interface for building printable zine files. For the time working fine for small / medium file processing but unstable and very slow for reasonably large processing jobs.
 
+---
 
-# Development Log
+## Development Log
+
+Some notes on the build-out process for this applications. These need to be cleaned up but are place-holders and reminders more than they are instructions.
 
 * decided to try to keep it simple
 * served straight html files first

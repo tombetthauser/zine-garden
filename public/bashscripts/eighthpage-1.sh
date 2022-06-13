@@ -1,5 +1,13 @@
 # ~~~~~~~~~~ GENERAL SETUP ~~~~~~~~~~~~~~~~~~~~
 
+# i=0
+# for file in ./zine-images-originals/*
+# do
+#   mv "$file" ./zine-images-originals/${i}.jpg
+#   i=$(($i + 1))
+# done
+
+
 # first we delete and recreate our zine images directory
 # we copy all of our original input images into this directory to manipulate
 rm -rf zine-images
@@ -16,8 +24,8 @@ zineImageCount=${#zineImageFileNames[@]}
 
 # now we set the max number of images per page
 # we also set the maximum number of image that can be on a sheet which could be calculated too
-pageMax=4
-sheetMax=8
+pageMax=16
+sheetMax=32
 
 # now we calculate the number of pages we'll need
 # this may need to be adjusted for larger zine counts and should be tested
@@ -25,7 +33,7 @@ sheetMax=8
 # then it adds another tow pages (one double-sided print sheet) if there were any leftover pages
 # its good this is here but it really shouldnt be used
 # zine page counts should be adjusted to fit evenly onto desired print layout without blank end pages
-pagesNeeded=$(((zineImageCount / pageMax)+((zineImageCount % pageMax > 0 ) * 2)))
+pagesNeeded=$(((zineImageCount / pageMax)+((zineImageCount % pageMax > 0 ) * 2) + 1)) # <-- temporary +1 needs to be coded dynamically
 
 # below are the pixel dimensions for page files which represent resolution
 # these will determine how pixellated or compressed any styling done later on is
@@ -72,7 +80,7 @@ done
 # the pattern here is tricky since it needs to be applied before reordering the images for page placement
 # this is best calculated manually with a physical mock-up of the zine size
 
-rotations=(0 0 180 180 180 180 0 0) # <--- set these manually for different zine layouts
+rotations=(180 180 0 0 0 0 180 180 0 0 180 180 180 180 0 0 0 0 180 180 180 180 0 0 180 180 180 0 0 0 180 180) # <--- set these manually for different zine layouts
 # rotations=(90 90 270 270 270 270 90 90) # <--- set these manually for different zine layouts
 rotationsLength=${#rotations[@]}
 
@@ -96,8 +104,8 @@ done
 # image sizes are percentages of total page height / width accounting for 1/8th inch border gaps
 # the border gaps are to match the 1/8th inch unprited white boarder on most home printers
 
-xImagePercent=4706 # represents 97.06% <-- set this manually for different zine layouts
-yImagePercent=4773 # represents 47.73% <-- set this manually for different zine layouts
+xImagePercent=2285 # represents 22.85% <-- set this manually for different zine layouts
+yImagePercent=2335 # represents 23.35% <-- set this manually for different zine layouts
 
 # calculate percentages into pixels
 xImageSizePixels=$(((xImagePercent * xPageSizePixels) / 10000)) # <-- division simulates percentage
@@ -124,7 +132,7 @@ done
 # the second will be assigned the relative order number at index 1 and so on
 # the pattern repeats for every print sheet meaning front and back
 
-relativePageOrders=(2 5 7 4 3 8 6 1) # <--- set these manually for different zine layouts
+relativePageOrders=(15 30 18 3 2 19 31 14 10 27 23 6 7 22 26 11 12 25 21 8 5 24 28 9 13 32 20 1 4 17 29 16) # <--- set these manually for different zine layouts
 relativePageOrdersLength=${#relativePageOrders[@]}
 
 # create a max image number
@@ -155,8 +163,8 @@ done
 # more coordinates can be added here for smaller zines
 # they start as percentages and are translated to pixels based on page size
 
-xCoordinatesPercentages=(147 5147 147 5147) # <-- these two arrays need to be set manually based on zine layout
-yCoordinatesPercentages=(114 114 5114 5114) # representing 1.47% 51.47% etc
+xCoordinatesPercentages=(0 2571 5143 7715) # <-- these two arrays need to be set manually based on zine layout
+yCoordinatesPercentages=(0 0 0 0 2555 2555 2555 2555 5110 5110 5110 5110 7665 7665 7665 7665) # representing 1.47% 51.47% etc
 
 xCoordinatesPercentagesLength=${#xCoordinatesPercentages[@]}
 yCoordinatesPercentagesLength=${#yCoordinatesPercentages[@]}
@@ -191,7 +199,7 @@ i=0
 # for ((i=0; i<$((zineImageCount)); i++)); do
 while [ $imagesAdded -lt $zineImageCount ]; do
   # zineImage=${zineImageFileNames[$((i))]}
-  zineImage=./zine-images/$((maxImages + i + 1))-ordered.jpeg
+  zineImage=./zine-images/$((maxImages + i + 1))-ordered.jpg
   if test -f "$zineImage"; then
     xPosition=$((xCoordinatesPixels[$((i % xCoordinatesPercentagesLength))]))
     yPosition=$((yCoordinatesPixels[$((i % yCoordinatesPercentagesLength))]))
