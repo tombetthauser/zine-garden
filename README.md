@@ -2,7 +2,7 @@
 
 A work in progress web interface for building printable zine files as well as uploading zine files and downloading other people's zine files for free. For the time working fine for small / medium file processing but unstable and very slow for reasonably large processing jobs.
 
-[http://zine.garden](http://zine.garden)
+[https://www.zine.garden/](https://www.zine.garden/)
 
 ```
 ⚠️ Warning: This is a work in progress! Large jobs will crash it currently. Working on that...
